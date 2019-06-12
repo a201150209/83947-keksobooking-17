@@ -43,14 +43,14 @@ function getNumberOfImage(number) {
 function PinProperty(number) {
   this.author = {
     avatar: 'img/avatars/user' + getNumberOfImage(number) + '.png'
-  },
+  };
   this.offer = {
     type: getRandomElementInArray(relatedPinsData.offer.type)
-  },
+  };
   this.location = {
     x: getRandomNumberFromRange(0, mapPinsWidth),
     y: getRandomNumberFromRange(relatedPinsData.location.y.min, relatedPinsData.location.y.max)
-  }
+  };
 }
 
 function createPinProperty(number) {
@@ -63,10 +63,10 @@ function createPin(property) {
   var authorAvatarWidth = authorAvatar.width;
   var authorAvatarHeight = authorAvatar.height;
 
-  pin.style.left = property.location.x  + authorAvatarWidth/2 + 'px';
+  pin.style.left = property.location.x + authorAvatarWidth / 2 + 'px';
   pin.style.top = property.location.y - authorAvatarHeight + 'px';
   authorAvatar.src = property.author.avatar;
-  authorAvatar.alt = '{{заголовок объявления}}';//do not forget get alt later
+  authorAvatar.alt = '{{заголовок объявления}}'; //do not forget get alt later
   relatedPins.push(pin);
 }
 
