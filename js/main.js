@@ -66,7 +66,7 @@ function createPin(property) {
   pin.style.left = property.location.x + authorAvatarWidth / 2 + 'px';
   pin.style.top = property.location.y - authorAvatarHeight + 'px';
   authorAvatar.src = property.author.avatar;
-  authorAvatar.alt = '{{заголовок объявления}}'; //do not forget get alt later
+  authorAvatar.alt = '{{заголовок объявления}}'; // do not forget get alt later
   relatedPins.push(pin);
 }
 
