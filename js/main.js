@@ -45,15 +45,15 @@ function PinEntity(number) {
 
 }
 
-function renderPin(property) {
+function renderPin(entity) {
   var pin = mapPinTemplate.cloneNode(true);
   var authorAvatar = pin.querySelector('img');
   var authorAvatarWidth = authorAvatar.width;
   var authorAvatarHeight = authorAvatar.height;
 
-  pin.style.left = property.location.x + authorAvatarWidth / 2 + 'px';
-  pin.style.top = property.location.y - authorAvatarHeight + 'px';
-  authorAvatar.src = property.author.avatar;
+  pin.style.left = entity.location.x + authorAvatarWidth / 2 + 'px';
+  pin.style.top = entity.location.y - authorAvatarHeight + 'px';
+  authorAvatar.src = entity.author.avatar;
   authorAvatar.alt = '{{заголовок объявления}}'; // do not forget get alt later
 
   return pin;
