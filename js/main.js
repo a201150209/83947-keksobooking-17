@@ -5,7 +5,7 @@ var mapPins = document.querySelector('.map__pins');
 var mapPinsWidth = mapPins.clientWidth;
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-var mockData = {
+var pinMockData = {
   numberOfPins: 8,
   offer: {
     type: [
@@ -36,11 +36,11 @@ function PinEntity(number) {
     avatar: 'img/avatars/user' + '0' + String(number) + '.png'
   };
   this.offer = {
-    type: getRandomElementInArray(mockData.offer.type)
+    type: getRandomElementInArray(pinMockData.offer.type)
   };
   this.location = {
     x: getRandomNumberFromRange(0, mapPinsWidth),
-    y: getRandomNumberFromRange(mockData.location.y.min, mockData.location.y.max)
+    y: getRandomNumberFromRange(pinMockData.location.y.min, pinMockData.location.y.max)
   };
 
 }
@@ -61,7 +61,7 @@ function renderPin(entity) {
 
 function renderPins() {
   var fragment = document.createDocumentFragment();
-  for (var i = 1; i <= mockData.numberOfPins; i++) {
+  for (var i = 1; i <= pinMockData.numberOfPins; i++) {
     var pin = renderPin(new PinEntity(i));
     fragment.appendChild(pin);
   }
