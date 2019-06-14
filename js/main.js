@@ -1,13 +1,12 @@
 'use strict';
 
-var NUMBER_OF_RELATED_PINS = 8;
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
 var mapPinsWidth = mapPins.clientWidth;
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var relatedPinsProperty = [];
-var relatedPins = [];
-var relatedPinsData = {
+
+var mockData = {
+  numberOfPins: 8,
   offer: {
     type: [
       'palace',
@@ -25,39 +24,28 @@ var relatedPinsData = {
 };
 
 function getRandomElementInArray(array) {
-  var min = 0;
-  var max = array.length - 1;
-  return array[getRandomNumberFromRange(min, max)];
+  return array[getRandomNumberFromRange(0, array.length - 1)];
 }
 
 function getRandomNumberFromRange(min, max) {
   return Math.round(min - 0.5 + Math.random() * (max - min + 1));
 }
 
-function getNumberOfImage(number) {
-  var imageNumber = number + 1;
-  imageNumber = '0' + String(imageNumber);
-  return imageNumber;
-}
-
-function PinProperty(number) {
+function PinEntity(number) {
   this.author = {
-    avatar: 'img/avatars/user' + getNumberOfImage(number) + '.png'
+    avatar: 'img/avatars/user' + '0' + String(number) + '.png'
   };
   this.offer = {
-    type: getRandomElementInArray(relatedPinsData.offer.type)
+    type: getRandomElementInArray(mockData.offer.type)
   };
   this.location = {
     x: getRandomNumberFromRange(0, mapPinsWidth),
-    y: getRandomNumberFromRange(relatedPinsData.location.y.min, relatedPinsData.location.y.max)
+    y: getRandomNumberFromRange(mockData.location.y.min, mockData.location.y.max)
   };
+
 }
 
-function createPinProperty(number) {
-  relatedPinsProperty.push(new PinProperty(number));
-}
-
-function createPin(property) {
+function renderPin(property) {
   var pin = mapPinTemplate.cloneNode(true);
   var authorAvatar = pin.querySelector('img');
   var authorAvatarWidth = authorAvatar.width;
@@ -67,19 +55,18 @@ function createPin(property) {
   pin.style.top = property.location.y - authorAvatarHeight + 'px';
   authorAvatar.src = property.author.avatar;
   authorAvatar.alt = '{{заголовок объявления}}'; // do not forget get alt later
-  relatedPins.push(pin);
+
+  return pin;
 }
 
-function createPins() {
+function renderPins() {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < NUMBER_OF_RELATED_PINS; i++) {
-    createPinProperty(i);
-    createPin(relatedPinsProperty[i]);
-    fragment.appendChild(relatedPins[i]);
+  for (var i = 1; i <= mockData.numberOfPins; i++) {
+    var pin = renderPin(new PinEntity(i));
+    fragment.appendChild(pin);
   }
   mapPins.appendChild(fragment);
 }
 
-createPins();
+renderPins();
 map.classList.remove('map--faded');
-
