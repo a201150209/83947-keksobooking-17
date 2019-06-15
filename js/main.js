@@ -1,10 +1,11 @@
 'use strict';
 
 var map = document.querySelector('.map');
-var mapPins = document.querySelector('.map__pins');
-var mapPinsWidth = mapPins.clientWidth;
-var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var mapFilters = map.querySelector('.map__filters');
 
+var pins = map.querySelector('.map__pins');
+var pinsWidth = pins.clientWidth;
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinMockData = {
   numberOfPins: 8,
   offer: {
@@ -23,6 +24,16 @@ var pinMockData = {
   }
 };
 
+var mainPin = map.querySelector('.map__pin--main');
+var mainPinWidth = mainPin.clientWidth;
+var mainPinHeight = mainPin.clientHeight;
+var mainPinPositionLeft = mainPin.style.left;
+var mainPinPositionTop = mainPin.style.top;
+
+var adForm = document.querySelector('.ad-form');
+var adFormFieldsets = adForm.querySelectorAll('fieldset');
+var adFormAddressField = adForm.querySelector('#address');
+
 function getRandomElementInArray(array) {
   return array[getRandomNumberFromRange(0, array.length - 1)];
 }
@@ -39,14 +50,14 @@ function PinEntity(number) {
     type: getRandomElementInArray(pinMockData.offer.type)
   };
   this.location = {
-    x: getRandomNumberFromRange(0, mapPinsWidth),
+    x: getRandomNumberFromRange(0, pinsWidth),
     y: getRandomNumberFromRange(pinMockData.location.y.min, pinMockData.location.y.max)
   };
 
 }
 
 function renderPin(entity) {
-  var pin = mapPinTemplate.cloneNode(true);
+  var pin = pinTemplate.cloneNode(true);
   var authorAvatar = pin.querySelector('img');
   var authorAvatarWidth = authorAvatar.width;
   var authorAvatarHeight = authorAvatar.height;
@@ -65,8 +76,37 @@ function renderPins() {
     var pin = renderPin(new PinEntity(i));
     fragment.appendChild(pin);
   }
-  mapPins.appendChild(fragment);
+  pins.appendChild(fragment);
 }
 
-renderPins();
-map.classList.remove('map--faded');
+function toggleStatusOfFormsElements(status) {
+  for (var i = 0; i < adFormFieldsets.length; i++) {
+    adFormFieldsets[i].disabled = status;
+  }
+  mapFilters.disabled = status;
+}
+toggleStatusOfFormsElements(true);
+
+function onClickMapPinMain() {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  toggleStatusOfFormsElements(false);
+  renderPins();
+}
+mainPin.addEventListener('click', onClickMapPinMain);
+
+function onMouseUpMapPinMain(evt) {
+  adFormAddressField.value = evt.pageX + ', ' + evt.pageY;
+}
+mainPin.addEventListener('mouseup', onMouseUpMapPinMain);
+
+function getMainPinCoordinates() {
+  var x = String(Math.floor(parseInt(mainPinPositionLeft, 10) + mainPinWidth / 2));
+  var y = String(Math.floor(parseInt(mainPinPositionTop, 10) + mainPinHeight / 2));
+  return x + ', ' + y;
+}
+
+function setAddressFieldValue() {
+  adFormAddressField.value = getMainPinCoordinates();
+}
+setAddressFieldValue();
