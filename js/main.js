@@ -96,7 +96,7 @@ function onClickMapPinMain() {
 mainPin.addEventListener('click', onClickMapPinMain);
 
 function onMouseUpMapPinMain(evt) {
-  adFormAddressField.value = evt.pageX + ', ' + evt.pageY;
+  adFormAddressField.value = evt.pageX + ', ' + evt.pageY; // will be changed later
 }
 mainPin.addEventListener('mouseup', onMouseUpMapPinMain);
 
@@ -110,3 +110,4 @@ function setAddressFieldValue() {
   adFormAddressField.value = getMainPinCoordinates();
 }
 setAddressFieldValue();
+
