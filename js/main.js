@@ -5,7 +5,7 @@ var mapFilters = map.querySelector('.map__filters');
 
 var pins = map.querySelector('.map__pins');
 var pinsWidth = pins.clientWidth;
-var MAIN_PIN_STEM_HEIGHT = 20;
+var MAIN_PIN_STEM_HEIGHT = 22;
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinMockData = {
   numberOfPins: 8,
@@ -28,8 +28,8 @@ var pinMockData = {
 var mainPin = map.querySelector('.map__pin--main');
 var mainPinWidth = mainPin.querySelector('img').offsetWidth;
 var mainPinHeight = mainPin.querySelector('img').offsetHeight;
-var mainPinPositionLeft = mainPin.style.left;
-var mainPinPositionTop = mainPin.style.top;
+var mainPinPositionLeft = parseInt(mainPin.style.left, 10);
+var mainPinPositionTop = parseInt(mainPin.style.top, 10);
 var mainPinCoordinates = getMainPinCoordinates();
 
 var adForm = document.querySelector('.ad-form');
@@ -96,17 +96,16 @@ function onClickMainPin() {
   mainPin.removeEventListener('click', onClickMainPin);
 }
 
-function onMouseUpMainPin(evt) {
-  adFormAddressField.value = evt.pageX + ', ' + evt.pageY;
-  console.log(evt);
-  mainPin.style.left = String(evt.pageX) + 'px';
-  // mainPin.style.left = String(evt.pageX - mainPinWidth / 2) + 'px';
-  mainPin.style.top = String(evt.pageY - (mainPinHeight + MAIN_PIN_STEM_HEIGHT)) + 'px';
+function onMouseUpMainPin() {
+  // Меняю координаты, потому что у метки появился острый конец
+  var x = mainPinPositionLeft + mainPinWidth / 2;
+  var y = mainPinPositionTop + mainPinHeight + MAIN_PIN_STEM_HEIGHT;
+  adFormAddressField.value = String(x) + ', ' + String(y);
 }
 
 function getMainPinCoordinates() {
-  var x = String(Math.floor(parseInt(mainPinPositionLeft, 10) + mainPinWidth / 2));
-  var y = String(Math.floor(parseInt(mainPinPositionTop, 10) + mainPinHeight / 2));
+  var x = String(Math.floor(mainPinPositionLeft + mainPinWidth / 2));
+  var y = String(Math.floor(mainPinPositionTop + mainPinHeight / 2));
   return x + ', ' + y;
 }
 
