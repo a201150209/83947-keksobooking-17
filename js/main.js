@@ -5,6 +5,7 @@ var mapFilters = map.querySelector('.map__filters');
 
 var pins = map.querySelector('.map__pins');
 var pinsWidth = pins.clientWidth;
+var MAIN_PIN_STEM_HEIGHT = 20;
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinMockData = {
   numberOfPins: 8,
@@ -25,10 +26,11 @@ var pinMockData = {
 };
 
 var mainPin = map.querySelector('.map__pin--main');
-var mainPinWidth = mainPin.clientWidth;
-var mainPinHeight = mainPin.clientHeight;
+var mainPinWidth = mainPin.querySelector('img').offsetWidth;
+var mainPinHeight = mainPin.querySelector('img').offsetHeight;
 var mainPinPositionLeft = mainPin.style.left;
 var mainPinPositionTop = mainPin.style.top;
+var mainPinCoordinates = getMainPinCoordinates();
 
 var adForm = document.querySelector('.ad-form');
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
@@ -85,20 +87,22 @@ function toggleStatusOfFormsElements(status) {
   }
   mapFilters.disabled = status;
 }
-toggleStatusOfFormsElements(true);
 
-function onClickMapPinMain() {
+function onClickMainPin() {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   toggleStatusOfFormsElements(false);
   renderPins();
+  mainPin.removeEventListener('click', onClickMainPin);
 }
-mainPin.addEventListener('click', onClickMapPinMain);
 
-function onMouseUpMapPinMain(evt) {
-  adFormAddressField.value = evt.pageX + ', ' + evt.pageY; // will be changed later
+function onMouseUpMainPin(evt) {
+  adFormAddressField.value = evt.pageX + ', ' + evt.pageY;
+  console.log(evt);
+  mainPin.style.left = String(evt.pageX) + 'px';
+  // mainPin.style.left = String(evt.pageX - mainPinWidth / 2) + 'px';
+  mainPin.style.top = String(evt.pageY - (mainPinHeight + MAIN_PIN_STEM_HEIGHT)) + 'px';
 }
-mainPin.addEventListener('mouseup', onMouseUpMapPinMain);
 
 function getMainPinCoordinates() {
   var x = String(Math.floor(parseInt(mainPinPositionLeft, 10) + mainPinWidth / 2));
@@ -106,8 +110,12 @@ function getMainPinCoordinates() {
   return x + ', ' + y;
 }
 
-function setAddressFieldValue() {
-  adFormAddressField.value = getMainPinCoordinates();
+function setAddressFieldValue(coordinates) {
+  adFormAddressField.value = coordinates;
 }
-setAddressFieldValue();
+
+toggleStatusOfFormsElements(true);
+mainPin.addEventListener('click', onClickMainPin);
+mainPin.addEventListener('mouseup', onMouseUpMainPin);
+setAddressFieldValue(mainPinCoordinates);
 
