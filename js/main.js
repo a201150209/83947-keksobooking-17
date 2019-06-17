@@ -5,7 +5,6 @@ var mapFilters = map.querySelector('.map__filters');
 
 var pins = map.querySelector('.map__pins');
 var pinsWidth = pins.clientWidth;
-var MAIN_PIN_STEM_HEIGHT = 22;
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinMockData = {
   numberOfPins: 8,
@@ -31,10 +30,30 @@ var mainPinHeight = mainPin.querySelector('img').offsetHeight;
 var mainPinPositionLeft = parseInt(mainPin.style.left, 10);
 var mainPinPositionTop = parseInt(mainPin.style.top, 10);
 var mainPinCoordinates = getMainPinCoordinates();
+var MAIN_PIN_STEM_HEIGHT = 22;
 
 var adForm = document.querySelector('.ad-form');
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
 var adFormAddressField = adForm.querySelector('#address');
+var adFormPriceField = adForm.querySelector('#price');
+var adFormTypeField = adForm.querySelector('#type');
+var adFormTimeInField = adForm.querySelector('#timein');
+var adFormTimeOutField = adForm.querySelector('#timeout');
+
+var offer = {
+  palace: {
+    minPrice: 10000
+  },
+  house: {
+    minPrice: 5000
+  },
+  flat: {
+    minPrice: 1000
+  },
+  bungalo: {
+    minPrice: 0
+  }
+};
 
 function getRandomElementInArray(array) {
   return array[getRandomNumberFromRange(0, array.length - 1)];
@@ -113,8 +132,29 @@ function setAddressFieldValue(coordinates) {
   adFormAddressField.value = coordinates;
 }
 
+function setMinPrice(offerType) {
+  adFormPriceField.min = offer[offerType].minPrice;
+  adFormPriceField.placeholder = offer[offerType].minPrice;
+}
+
+function onAdFormTypeFieldChange(evt) {
+  setMinPrice(evt.target.value);
+}
+
+function onAdFormTimeInFieldChange(evt) {
+  adFormTimeOutField.value = evt.target.value;
+}
+
+function onAdFormTimeOutFieldChange(evt) {
+  adFormTimeInField.value = evt.target.value;
+}
+
 toggleStatusOfFormsElements(true);
 mainPin.addEventListener('click', onClickMainPin);
 mainPin.addEventListener('mouseup', onMouseUpMainPin);
 setAddressFieldValue(mainPinCoordinates);
+setMinPrice(adFormTypeField.value);
+adFormTypeField.addEventListener('change', onAdFormTypeFieldChange);
+adFormTimeInField.addEventListener('change', onAdFormTimeInFieldChange);
+adFormTimeOutField.addEventListener('change', onAdFormTimeOutFieldChange);
 
