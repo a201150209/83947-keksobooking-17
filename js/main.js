@@ -3,6 +3,7 @@ var MAIN_PIN_STEM_HEIGHT = 19;
 
 var map = document.querySelector('.map');
 var mapFilters = map.querySelector('.map__filters');
+var mapLeftMargin = getMapLeftMargin();
 
 var pinsWrapper = map.querySelector('.map__pins');
 var pinsWrapperWidth = pinsWrapper.clientWidth;
@@ -54,6 +55,12 @@ var offer = {
     minPrice: 0
   }
 };
+
+function getMapLeftMargin() {
+  var documentWidth = document.documentElement.clientWidth;
+  var mapWidth = map.clientWidth;
+  return (documentWidth - mapWidth) / 2;
+}
 
 function getRandomElementInArray(array) {
   return array[getRandomNumberFromRange(0, array.length - 1)];
@@ -116,19 +123,20 @@ function activatePage() {
 function getMainPinCoordinates(pinType) {
   var mainPinPositionLeft = parseInt(mainPin.style.left, 10);
   var mainPinPositionTop = parseInt(mainPin.style.top, 10);
-  var x = (Math.floor(mainPinPositionLeft + mainPinWidth / 2)).toString();
-  var y;
+  var coordinates = {
+    x: (Math.floor(mainPinPositionLeft + mainPinWidth / 2)).toString()
+  };
 
   switch (pinType) {
     case 'round':
-      y = (Math.floor(mainPinPositionTop + mainPinHeight / 2)).toString();
+      coordinates.y = (Math.floor(mainPinPositionTop + mainPinHeight / 2)).toString();
       break;
     case 'marker':
-      y = (Math.floor(mainPinPositionTop + mainPinHeight + MAIN_PIN_STEM_HEIGHT)).toString();
+      coordinates.y = (Math.floor(mainPinPositionTop + mainPinHeight + MAIN_PIN_STEM_HEIGHT)).toString();
       break;
   }
 
-  return {x: x, y: y};
+  return coordinates;
 }
 
 function setAddressFieldValue(pinType) {
@@ -153,14 +161,18 @@ function onAdFormTimeOutFieldChange(evt) {
   adFormTimeInField.value = evt.target.value;
 }
 
+function setMainPinPosition(coordinates) {
+  var pageTopOffset = window.pageYOffset;
+  // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
+  mainPin.style.left = (coordinates.x - mapLeftMargin - mainPinHeight / 2).toString() + 'px';
+  mainPin.style.top = (coordinates.y + pageTopOffset - mainPinHeight - MAIN_PIN_STEM_HEIGHT).toString() + 'px';
+}
+
 function onMainPinMouseDown(evt) {
   evt.preventDefault();
 
-  var documentWidth = document.documentElement.clientWidth;
-  var mapWidth = map.clientWidth;
-  var mapLeftMargin = (documentWidth - mapWidth) / 2;
   var pageTopOffset = window.pageYOffset;
-  var startCoordinates = {
+  var сoordinates = {
     x: evt.clientX,
     y: evt.clientY
   };
@@ -170,30 +182,23 @@ function onMainPinMouseDown(evt) {
     isMainPinDragged = true;
   }
 
-  function setMainPinPosition() {
-    pageTopOffset = window.pageYOffset;
-    // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
-    mainPin.style.left = (startCoordinates.x - mapLeftMargin - mainPinHeight / 2).toString() + 'px';
-    mainPin.style.top = (startCoordinates.y + pageTopOffset - mainPinHeight - MAIN_PIN_STEM_HEIGHT).toString() + 'px';
-  }
-
   function onMapMouseMove(moveEvt) {
     moveEvt.preventDefault();
     pageTopOffset = window.pageYOffset;
 
-    startCoordinates = {
+    сoordinates = {
       x: moveEvt.clientX,
       y: moveEvt.clientY
     };
 
-    if (startCoordinates.y + pageTopOffset <= pinMockData.location.y.min) {
-      startCoordinates.y = pinMockData.location.y.min - pageTopOffset;
-    } else if (startCoordinates.y + pageTopOffset >= pinMockData.location.y.max) {
-      startCoordinates.y = pinMockData.location.y.max - pageTopOffset;
+    if (сoordinates.y + pageTopOffset <= pinMockData.location.y.min) {
+      сoordinates.y = pinMockData.location.y.min - pageTopOffset;
+    } else if (сoordinates.y + pageTopOffset >= pinMockData.location.y.max) {
+      сoordinates.y = pinMockData.location.y.max - pageTopOffset;
     }
 
-    setMainPinPosition();
     setAddressFieldValue('marker');
+    setMainPinPosition(сoordinates);
     mainPin.removeEventListener('mousedown', onMainPinMouseDown);
   }
 
@@ -205,7 +210,7 @@ function onMainPinMouseDown(evt) {
     setAddressFieldValue('marker');
   }
 
-  setMainPinPosition();
+  setMainPinPosition(сoordinates);
   map.addEventListener('mousemove', onMapMouseMove);
   document.addEventListener('mouseup', onDocumentMouseUp);
 }
@@ -217,14 +222,18 @@ function deletePins() {
   }
 }
 
+function resetMainPinPosition() {
+  mainPin.style.left = (mainPinStartCoordinates.x - mainPinWidth / 2).toString() + 'px';
+  mainPin.style.top = (mainPinStartCoordinates.y - mainPinHeight / 2).toString() + 'px';
+}
+
 function deactivatePage() {
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
   toggleStatusOfFormsElements(true);
   deletePins();
   isMainPinDragged = false;
-  mainPin.style.left = (mainPinStartCoordinates.x - mainPinWidth / 2).toString() + 'px';
-  mainPin.style.top = (mainPinStartCoordinates.y - mainPinHeight / 2).toString() + 'px';
+  resetMainPinPosition();
   setAddressFieldValue('round');
 }
 
