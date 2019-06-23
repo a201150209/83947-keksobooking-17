@@ -210,7 +210,6 @@ function onMainPinMouseDown(evt) {
     setAddressFieldValue('marker');
   }
 
-  setMainPinPosition(сoordinates);
   map.addEventListener('mousemove', onMapMouseMove);
   document.addEventListener('mouseup', onDocumentMouseUp);
 }
