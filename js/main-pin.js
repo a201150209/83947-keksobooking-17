@@ -1,39 +1,13 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_STEM_HEIGHT = 19;
+  var STEM_HEIGHT = 19;
   var map = document.querySelector('.map');
-  var mainPinElement = map.querySelector('.map__pin--main');
-  var mainPinWidth = mainPinElement.querySelector('img').offsetWidth;
-  var mainPinHeight = mainPinElement.querySelector('img').offsetHeight;
+  var mainPin = map.querySelector('.map__pin--main');
+  var width = mainPin.querySelector('img').offsetWidth;
+  var height = mainPin.querySelector('img').offsetHeight;
+  var startCoordinates = getCoordinates('round');
   var mapLeftMargin = getMapLeftMargin();
-
-  window.mainPin = {
-    isDragged: false,
-    getCoordinates: function (pinType) {
-      var positionLeft = parseInt(mainPinElement.style.left, 10);
-      var positionTop = parseInt(mainPinElement.style.top, 10);
-      var coordinates = {
-        x: (Math.floor(positionLeft + mainPinWidth / 2)).toString()
-      };
-
-      switch (pinType) {
-        case 'round':
-          coordinates.y = (Math.floor(positionTop + mainPinHeight / 2)).toString();
-          break;
-        case 'marker':
-          coordinates.y = (Math.floor(positionTop + mainPinHeight + MAIN_PIN_STEM_HEIGHT)).toString();
-          break;
-      }
-
-      return coordinates;
-    },
-    resetPosition: function () {
-      var startCoordinates = window.mainPin.getCoordinates('round');
-      mainPinElement.style.left = (startCoordinates.x - mainPinWidth / 2).toString() + 'px';
-      mainPinElement.style.top = (startCoordinates.y - mainPinHeight / 2).toString() + 'px';
-    }
-  };
 
   function getMapLeftMargin() {
     var documentWidth = document.documentElement.clientWidth;
@@ -41,11 +15,35 @@
     return (documentWidth - mapWidth) / 2;
   }
 
-  function setMainPinPosition(coordinates) {
+  function getCoordinates(pinType) {
+    var positionLeft = parseInt(mainPin.style.left, 10);
+    var positionTop = parseInt(mainPin.style.top, 10);
+    var coordinates = {
+      x: (Math.floor(positionLeft + width / 2)).toString()
+    };
+
+    switch (pinType) {
+      case 'round':
+        coordinates.y = (Math.floor(positionTop + height / 2)).toString();
+        break;
+      case 'marker':
+        coordinates.y = (Math.floor(positionTop + height + STEM_HEIGHT)).toString();
+        break;
+    }
+
+    return coordinates;
+  }
+
+  function setPosition(coordinates) {
     var pageTopOffset = window.pageYOffset;
     // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
-    mainPinElement.style.left = (coordinates.x - mapLeftMargin - mainPinHeight / 2).toString() + 'px';
-    mainPinElement.style.top = (coordinates.y + pageTopOffset - mainPinHeight - MAIN_PIN_STEM_HEIGHT).toString() + 'px';
+    mainPin.style.left = (coordinates.x - mapLeftMargin - height / 2).toString() + 'px';
+    mainPin.style.top = (coordinates.y + pageTopOffset - height - STEM_HEIGHT).toString() + 'px';
+  }
+
+  function resetPosition() {
+    mainPin.style.left = (startCoordinates.x - width / 2).toString() + 'px';
+    mainPin.style.top = (startCoordinates.y - height / 2).toString() + 'px';
   }
 
   function onMainPinMouseDown(evt) {
@@ -71,22 +69,22 @@
         y: moveEvt.clientY
       };
 
-      if (сoordinates.y + pageTopOffset <= window.pins.mockData.location.y.min) {
-        сoordinates.y = window.pins.mockData.location.y.min - pageTopOffset;
-      } else if (сoordinates.y + pageTopOffset >= window.pins.mockData.location.y.max) {
-        сoordinates.y = window.pins.mockData.location.y.max - pageTopOffset;
+      if (сoordinates.y + pageTopOffset <= window.pins.location.y.min) {
+        сoordinates.y = window.pins.location.y.min - pageTopOffset;
+      } else if (сoordinates.y + pageTopOffset >= window.pins.location.y.max) {
+        сoordinates.y = window.pins.location.y.max - pageTopOffset;
       }
 
       window.adForm.setAddressFieldValue('marker');
-      setMainPinPosition(сoordinates);
-      mainPinElement.removeEventListener('mousedown', onMainPinMouseDown);
+      setPosition(сoordinates);
+      mainPin.removeEventListener('mousedown', onMainPinMouseDown);
     }
 
     function onDocumentMouseUp(upEvt) {
       upEvt.preventDefault();
       map.removeEventListener('mousemove', onMapMouseMove);
       document.removeEventListener('mouseup', onDocumentMouseUp);
-      mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
+      mainPin.addEventListener('mousedown', onMainPinMouseDown);
       window.adForm.setAddressFieldValue('marker');
     }
 
@@ -94,5 +92,11 @@
     document.addEventListener('mouseup', onDocumentMouseUp);
   }
 
-  mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
+  mainPin.addEventListener('mousedown', onMainPinMouseDown);
+
+  window.mainPin = {
+    isDragged: false,
+    getCoordinates: getCoordinates,
+    resetPosition: resetPosition
+  };
 })();

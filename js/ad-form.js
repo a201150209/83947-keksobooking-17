@@ -1,14 +1,14 @@
 'use strict';
 
 (function () {
-  var adFormElement = document.querySelector('.ad-form');
-  var adFormAddressField = adFormElement.querySelector('#address');
-  var adFormPriceField = adFormElement.querySelector('#price');
-  var adFormTypeField = adFormElement.querySelector('#type');
-  var adFormTimeInField = adFormElement.querySelector('#timein');
-  var adFormTimeOutField = adFormElement.querySelector('#timeout');
-  var adFormResetButton = adFormElement.querySelector('.ad-form__reset');
-  var addFormOffer = {
+  var adForm = document.querySelector('.ad-form');
+  var addressField = adForm.querySelector('#address');
+  var priceField = adForm.querySelector('#price');
+  var typeField = adForm.querySelector('#type');
+  var timeInField = adForm.querySelector('#timein');
+  var timeOutField = adForm.querySelector('#timeout');
+  var resetButton = adForm.querySelector('.ad-form__reset');
+  var offer = {
     palace: {
       minPrice: 10000
     },
@@ -24,37 +24,39 @@
   };
 
   function setMinPrice(offerType) {
-    adFormPriceField.min = addFormOffer[offerType].minPrice;
-    adFormPriceField.placeholder = addFormOffer[offerType].minPrice;
+    priceField.min = offer[offerType].minPrice;
+    priceField.placeholder = offer[offerType].minPrice;
   }
 
-  function onAdFormTypeFieldChange(evt) {
+  function onTypeFieldChange(evt) {
     setMinPrice(evt.target.value);
   }
 
-  function onAdFormTimeInFieldChange(evt) {
-    adFormTimeOutField.value = evt.target.value;
+  function onTimeInFieldChange(evt) {
+    timeOutField.value = evt.target.value;
   }
 
-  function onAdFormTimeOutFieldChange(evt) {
-    adFormTimeInField.value = evt.target.value;
+  function onTimeOutFieldChange(evt) {
+    timeInField.value = evt.target.value;
   }
 
-  function onAdFormResetButtonClick() {
+  function onResetButtonClick() {
     window.page.deactivate();
   }
 
-  window.adForm = {
-    setAddressFieldValue: function (pinType) {
-      var pinCoordinates = window.mainPin.getCoordinates(pinType);
-      adFormAddressField.value = pinCoordinates.x + ', ' + pinCoordinates.y;
-    }
-  };
+  function setAddressFieldValue(pinType) {
+    var pinCoordinates = window.mainPin.getCoordinates(pinType);
+    addressField.value = pinCoordinates.x + ', ' + pinCoordinates.y;
+  }
 
-  setMinPrice(adFormTypeField.value);
-  window.adForm.setAddressFieldValue('round');
-  adFormTypeField.addEventListener('change', onAdFormTypeFieldChange);
-  adFormTimeInField.addEventListener('change', onAdFormTimeInFieldChange);
-  adFormTimeOutField.addEventListener('change', onAdFormTimeOutFieldChange);
-  adFormResetButton.addEventListener('click', onAdFormResetButtonClick);
+  setMinPrice(typeField.value);
+  setAddressFieldValue('round');
+  typeField.addEventListener('change', onTypeFieldChange);
+  timeInField.addEventListener('change', onTimeInFieldChange);
+  timeOutField.addEventListener('change', onTimeOutFieldChange);
+  resetButton.addEventListener('click', onResetButtonClick);
+
+  window.adForm = {
+    setAddressFieldValue: setAddressFieldValue
+  };
 })();

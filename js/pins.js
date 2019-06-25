@@ -2,69 +2,62 @@
 
 (function () {
   var map = document.querySelector('.map');
-  var pinsWrapper = map.querySelector('.map__pins');
-  var pinsWrapperWidth = pinsWrapper.clientWidth;
-  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var wrapper = map.querySelector('.map__pins');
+  var wrapperWidth = wrapper.clientWidth;
+  var template = document.querySelector('#pin').content.querySelector('.map__pin');
+  var location = {
+    y: {
+      min: 130,
+      max: 630
+    }
+  };
 
-
-  function PinEntity(number) {
+  function Pin(number) {
     this.author = {
       avatar: 'img/avatars/user' + '0' + number.toString() + '.png'
     };
     this.offer = {
-      type: window.utils.getRandomElementInArray(window.pins.mockData.offer.type)
+      type: window.utils.getRandomElementInArray(window.mockData.offer.type)
     };
     this.location = {
-      x: window.utils.getRandomNumberFromRange(0, pinsWrapperWidth),
-      y: window.utils.getRandomNumberFromRange(window.pins.mockData.location.y.min, window.pins.mockData.location.y.max)
+      x: window.utils.getRandomNumberFromRange(0, wrapperWidth),
+      y: window.utils.getRandomNumberFromRange(location.y.min, location.y.max)
     };
   }
 
   function renderPin(entity) {
-    var pin = pinTemplate.cloneNode(true);
-    var authorAvatar = pin.querySelector('img');
-    var authorAvatarWidth = authorAvatar.width;
-    var authorAvatarHeight = authorAvatar.height;
+    var pin = template.cloneNode(true);
+    var avatar = pin.querySelector('img');
+    var avatarWidth = avatar.width;
+    var avatarHeight = avatar.height;
 
-    pin.style.left = entity.location.x + authorAvatarWidth / 2 + 'px';
-    pin.style.top = entity.location.y - authorAvatarHeight + 'px';
-    authorAvatar.src = entity.author.avatar;
-    authorAvatar.alt = '{{заголовок объявления}}'; // do not forget get alt later
+    pin.style.left = entity.location.x + avatarWidth / 2 + 'px';
+    pin.style.top = entity.location.y - avatarHeight + 'px';
+    avatar.src = entity.author.avatar;
+    avatar.alt = '{{заголовок объявления}}'; // do not forget get alt later
 
     return pin;
   }
 
-  window.pins = {
-    mockData: {
-      numberOfPins: 8,
-      offer: {
-        type: [
-          'palace',
-          'flat',
-          'house',
-          'bungalo'
-        ]
-      },
-      location: {
-        y: {
-          min: 130,
-          max: 630
-        }
-      }
-    },
-    render: function () {
-      var fragment = document.createDocumentFragment();
-      for (var i = 1; i <= window.pins.mockData.numberOfPins; i++) {
-        var pin = renderPin(new PinEntity(i));
-        fragment.appendChild(pin);
-      }
-      pinsWrapper.appendChild(fragment);
-    },
-    delete: function () {
-      var pins = map.querySelectorAll('.map__pin');
-      for (var i = 1; i < pins.length; i++) {
-        pins[i].remove();
-      }
+  function renderPins() {
+    var fragment = document.createDocumentFragment();
+    for (var i = 1; i <= window.mockData.numberOfPins; i++) {
+      var pin = renderPin(new Pin(i));
+      fragment.appendChild(pin);
     }
+    wrapper.appendChild(fragment);
+  }
+
+  function deletePins() {
+    var pins = map.querySelectorAll('.map__pin');
+    for (var i = 1; i < pins.length; i++) {
+      pins[i].remove();
+    }
+  }
+
+  window.pins = {
+    location: location,
+    render: renderPins,
+    delete: deletePins
   };
 })();
