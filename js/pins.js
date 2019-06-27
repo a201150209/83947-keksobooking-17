@@ -3,25 +3,18 @@
 (function () {
   var map = document.querySelector('.map');
   var wrapper = map.querySelector('.map__pins');
-  var wrapperWidth = wrapper.clientWidth;
   var template = document.querySelector('#pin').content.querySelector('.map__pin');
-  var location = {
-    y: {
-      min: 130,
-      max: 630
-    }
-  };
 
-  function Pin(number) {
+  function Pin(data) {
     this.author = {
-      avatar: 'img/avatars/user' + '0' + number.toString() + '.png'
+      avatar: data.author.avatar
     };
     this.offer = {
-      type: window.utils.getRandomElementInArray(window.mockData.offer.type)
+      type: data.offer.type
     };
     this.location = {
-      x: window.utils.getRandomNumberFromRange(0, wrapperWidth),
-      y: window.utils.getRandomNumberFromRange(location.y.min, location.y.max)
+      x: data.location.x,
+      y: data.location.y
     };
   }
 
@@ -41,8 +34,8 @@
 
   function renderPins() {
     var fragment = document.createDocumentFragment();
-    for (var i = 1; i <= window.mockData.numberOfPins; i++) {
-      var pin = renderPin(new Pin(i));
+    for (var i = 0; i < window.pinsData.data.length; i++) {
+      var pin = renderPin(new Pin(window.pinsData.data[i]));
       fragment.appendChild(pin);
     }
     wrapper.appendChild(fragment);
@@ -56,7 +49,6 @@
   }
 
   window.pins = {
-    location: location,
     render: renderPins,
     delete: deletePins
   };

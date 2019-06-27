@@ -7,6 +7,12 @@
   var width = mainPin.querySelector('img').offsetWidth;
   var height = mainPin.querySelector('img').offsetHeight;
   var startCoordinates = getCoordinates('round');
+  var location = {
+    y: {
+      min: 130,
+      max: 630
+    }
+  };
   var mapLeftMargin = getMapLeftMargin();
 
   function getMapLeftMargin() {
@@ -69,10 +75,10 @@
         y: moveEvt.clientY
       };
 
-      if (сoordinates.y + pageTopOffset <= window.pins.location.y.min) {
-        сoordinates.y = window.pins.location.y.min - pageTopOffset;
-      } else if (сoordinates.y + pageTopOffset >= window.pins.location.y.max) {
-        сoordinates.y = window.pins.location.y.max - pageTopOffset;
+      if (сoordinates.y + pageTopOffset <= location.y.min) {
+        сoordinates.y = location.y.min - pageTopOffset;
+      } else if (сoordinates.y + pageTopOffset >= location.y.max) {
+        сoordinates.y = location.y.max - pageTopOffset;
       }
 
       window.adForm.setAddressFieldValue('marker');

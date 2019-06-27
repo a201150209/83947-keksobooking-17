@@ -18,7 +18,7 @@
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     toggleStatusOfFormsFieldsets(false);
-    window.pins.render();
+    window.pinsData.getPinsData();
   }
 
   function deactivate() {
