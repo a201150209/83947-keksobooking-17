@@ -8,24 +8,16 @@
   var timeInField = adForm.querySelector('#timein');
   var timeOutField = adForm.querySelector('#timeout');
   var resetButton = adForm.querySelector('.ad-form__reset');
-  var offer = { // переписать как словарь
-    palace: {
-      minPrice: 10000
-    },
-    house: {
-      minPrice: 5000
-    },
-    flat: {
-      minPrice: 1000
-    },
-    bungalo: {
-      minPrice: 0
-    }
+  var MinPrice = {
+    palace: 10000,
+    house: 5000,
+    flat: 1000,
+    bungalo: 0
   };
 
   function setMinPrice(offerType) {
-    priceField.min = offer[offerType].minPrice;
-    priceField.placeholder = offer[offerType].minPrice;
+    priceField.min = MinPrice[offerType];
+    priceField.placeholder = MinPrice[offerType];
   }
 
   function onTypeFieldChange(evt) {
