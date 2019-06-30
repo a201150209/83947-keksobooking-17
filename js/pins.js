@@ -4,6 +4,14 @@
   var map = document.querySelector('.map');
   var wrapper = map.querySelector('.map__pins');
   var template = document.querySelector('#pin').content.querySelector('.map__pin');
+  var xhrRequestData = {
+    type: 'GET',
+    url: 'https://js.dump.academy/keksobooking/data',
+    responseType: 'json',
+    timeout: 3000,
+    onLoad: renderPins,
+    onError: renderPinsError
+  };
 
   function Pin(data) {
     this.author = {
@@ -32,13 +40,22 @@
     return pin;
   }
 
-  function renderPins() {
+  function renderPins(data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.pinsData.data.length; i++) {
-      var pin = renderPin(new Pin(window.pinsData.data[i]));
+    for (var i = 0; i < data.length; i++) {
+      var pin = renderPin(new Pin(data[i]));
       fragment.appendChild(pin);
     }
     wrapper.appendChild(fragment);
+  }
+
+  function renderPinsError(data) {
+    var errorTemplate = document.querySelector('#error').content;
+    var error = errorTemplate.cloneNode(true);
+    var errorMessage = error.querySelector('.error__message');
+    errorMessage.textContent = data;
+    var main = document.querySelector('main');
+    main.appendChild(error);
   }
 
   function deletePins() {
@@ -49,7 +66,9 @@
   }
 
   window.pins = {
+    requestData: xhrRequestData,
     render: renderPins,
+    renderError: renderPinsError,
     delete: deletePins
   };
 })();

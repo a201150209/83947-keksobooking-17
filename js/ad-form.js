@@ -8,7 +8,7 @@
   var timeInField = adForm.querySelector('#timein');
   var timeOutField = adForm.querySelector('#timeout');
   var resetButton = adForm.querySelector('.ad-form__reset');
-  var offer = {
+  var offer = { // переписать как словарь
     palace: {
       minPrice: 10000
     },
