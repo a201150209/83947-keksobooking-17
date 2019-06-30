@@ -76,12 +76,14 @@
     evt.preventDefault();
     coordinates.current.x = evt.clientX;
     coordinates.current.y = evt.clientY;
-    var pageTopOffset = window.pageYOffset;
-    var positionTop = coordinates.current.y + pageTopOffset;
 
-    if (positionTop <= coordinates.min.y) {
+    var pageTopOffset = window.pageYOffset;
+    var positionTopTooHigh = (coordinates.current.y + pageTopOffset) <= coordinates.min.y;
+    var positionTopTooLow = (coordinates.current.y + pageTopOffset) >= coordinates.max.y;
+
+    if (positionTopTooHigh) {
       coordinates.current.y = coordinates.min.y - pageTopOffset;
-    } else if (positionTop >= coordinates.max.y) {
+    } else if (positionTopTooLow) {
       coordinates.current.y = coordinates.max.y - pageTopOffset;
     }
 
