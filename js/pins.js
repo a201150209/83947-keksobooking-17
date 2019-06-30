@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MAX_QUANTITY = 4;
   var map = document.querySelector('.map');
   var wrapper = map.querySelector('.map__pins');
   var template = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -12,6 +13,9 @@
     onLoad: renderPins,
     onError: renderPinsError
   };
+  var downloadedData = [];
+
+  var housingTypeFilter = map.querySelector('#housing-type');
 
   function Pin(data) {
     this.author = {
@@ -41,10 +45,18 @@
   }
 
   function renderPins(data) {
+    if (downloadedData.length === 0) {
+      downloadedData = data;
+    }
+
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < data.length; i++) {
       var pin = renderPin(new Pin(data[i]));
       fragment.appendChild(pin);
+
+      if (i > MAX_QUANTITY) {
+        break;
+      }
     }
     wrapper.appendChild(fragment);
   }
@@ -64,6 +76,18 @@
       pins[i].remove();
     }
   }
+
+  function filterData(condititon) {
+    return downloadedData.slice().filter(function (data) {
+      return data.offer.type === condititon;
+    });
+  }
+
+  housingTypeFilter.addEventListener('change', function (evt) {
+    deletePins();
+    var filteredData = filterData(evt.target.value);
+    renderPins(filteredData);
+  });
 
   window.pins = {
     requestData: xhrRequestData,
