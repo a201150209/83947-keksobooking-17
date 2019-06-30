@@ -6,7 +6,19 @@
   var mainPin = map.querySelector('.map__pin--main');
   var width = mainPin.querySelector('img').offsetWidth;
   var height = mainPin.querySelector('img').offsetHeight;
-  var startCoordinates = getCoordinates('round');
+  var coordinates = {
+    start: getCoordinates('round'),
+    current: {
+      x: undefined,
+      y: undefined
+    },
+    min: {
+      y: 130
+    },
+    max: {
+      y: 630
+    }
+  };
   var mapLeftMargin = getMapLeftMargin();
 
   function getMapLeftMargin() {
@@ -18,78 +30,74 @@
   function getCoordinates(pinType) {
     var positionLeft = parseInt(mainPin.style.left, 10);
     var positionTop = parseInt(mainPin.style.top, 10);
-    var coordinates = {
+    var currentCoordinates = {
       x: (Math.floor(positionLeft + width / 2)).toString()
     };
 
     switch (pinType) {
       case 'round':
-        coordinates.y = (Math.floor(positionTop + height / 2)).toString();
+        currentCoordinates.y = (Math.floor(positionTop + height / 2)).toString();
         break;
       case 'marker':
-        coordinates.y = (Math.floor(positionTop + height + STEM_HEIGHT)).toString();
+        currentCoordinates.y = (Math.floor(positionTop + height + STEM_HEIGHT)).toString();
         break;
     }
 
-    return coordinates;
+    return currentCoordinates;
   }
 
-  function setPosition(coordinates) {
+  function setPosition(currentCoordinates) {
     var pageTopOffset = window.pageYOffset;
     // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
-    mainPin.style.left = (coordinates.x - mapLeftMargin - height / 2).toString() + 'px';
-    mainPin.style.top = (coordinates.y + pageTopOffset - height - STEM_HEIGHT).toString() + 'px';
+    mainPin.style.left = (currentCoordinates.x - mapLeftMargin - height / 2).toString() + 'px';
+    mainPin.style.top = (currentCoordinates.y + pageTopOffset - height - STEM_HEIGHT).toString() + 'px';
   }
 
   function resetPosition() {
-    mainPin.style.left = (startCoordinates.x - width / 2).toString() + 'px';
-    mainPin.style.top = (startCoordinates.y - height / 2).toString() + 'px';
+    mainPin.style.left = (coordinates.start.x - width / 2).toString() + 'px';
+    mainPin.style.top = (coordinates.start.y - height / 2).toString() + 'px';
   }
 
   function onMainPinMouseDown(evt) {
     evt.preventDefault();
-
-    var pageTopOffset = window.pageYOffset;
-    var сoordinates = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
+    coordinates.current.x = evt.clientX;
+    coordinates.current.y = evt.clientY;
 
     if (!window.mainPin.isDragged) {
       window.page.activate();
       window.mainPin.isDragged = true;
     }
 
-    function onMapMouseMove(moveEvt) {
-      moveEvt.preventDefault();
-      pageTopOffset = window.pageYOffset;
-
-      сoordinates = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      if (сoordinates.y + pageTopOffset <= window.pins.location.y.min) {
-        сoordinates.y = window.pins.location.y.min - pageTopOffset;
-      } else if (сoordinates.y + pageTopOffset >= window.pins.location.y.max) {
-        сoordinates.y = window.pins.location.y.max - pageTopOffset;
-      }
-
-      window.adForm.setAddressFieldValue('marker');
-      setPosition(сoordinates);
-      mainPin.removeEventListener('mousedown', onMainPinMouseDown);
-    }
-
-    function onDocumentMouseUp(upEvt) {
-      upEvt.preventDefault();
-      map.removeEventListener('mousemove', onMapMouseMove);
-      document.removeEventListener('mouseup', onDocumentMouseUp);
-      mainPin.addEventListener('mousedown', onMainPinMouseDown);
-      window.adForm.setAddressFieldValue('marker');
-    }
-
     map.addEventListener('mousemove', onMapMouseMove);
     document.addEventListener('mouseup', onDocumentMouseUp);
+  }
+
+  function onMapMouseMove(evt) {
+    evt.preventDefault();
+    coordinates.current.x = evt.clientX;
+    coordinates.current.y = evt.clientY;
+
+    var pageTopOffset = window.pageYOffset;
+    var positionTopTooHigh = (coordinates.current.y + pageTopOffset) <= coordinates.min.y;
+    var positionTopTooLow = (coordinates.current.y + pageTopOffset) >= coordinates.max.y;
+
+    if (positionTopTooHigh) {
+      coordinates.current.y = coordinates.min.y - pageTopOffset;
+    } else if (positionTopTooLow) {
+      coordinates.current.y = coordinates.max.y - pageTopOffset;
+    }
+
+    window.adForm.setAddressFieldValue('marker');
+    setPosition(coordinates.current);
+    mainPin.removeEventListener('mousedown', onMainPinMouseDown);
+  }
+
+  function onDocumentMouseUp(evt) {
+    evt.preventDefault();
+    map.removeEventListener('mousemove', onMapMouseMove);
+    document.removeEventListener('mouseup', onDocumentMouseUp);
+    mainPin.addEventListener('mousedown', onMainPinMouseDown);
+    window.adForm.setAddressFieldValue('marker');
   }
 
   mainPin.addEventListener('mousedown', onMainPinMouseDown);

@@ -3,25 +3,26 @@
 (function () {
   var map = document.querySelector('.map');
   var wrapper = map.querySelector('.map__pins');
-  var wrapperWidth = wrapper.clientWidth;
   var template = document.querySelector('#pin').content.querySelector('.map__pin');
-  var location = {
-    y: {
-      min: 130,
-      max: 630
-    }
+  var xhrRequestData = {
+    type: 'GET',
+    url: 'https://js.dump.academy/keksobooking/data',
+    responseType: 'json',
+    timeout: 3000,
+    onLoad: renderPins,
+    onError: renderPinsError
   };
 
-  function Pin(number) {
+  function Pin(data) {
     this.author = {
-      avatar: 'img/avatars/user' + '0' + number.toString() + '.png'
+      avatar: data.author.avatar
     };
     this.offer = {
-      type: window.utils.getRandomElementInArray(window.mockData.offer.type)
+      type: data.offer.type
     };
     this.location = {
-      x: window.utils.getRandomNumberFromRange(0, wrapperWidth),
-      y: window.utils.getRandomNumberFromRange(location.y.min, location.y.max)
+      x: data.location.x,
+      y: data.location.y
     };
   }
 
@@ -39,13 +40,22 @@
     return pin;
   }
 
-  function renderPins() {
+  function renderPins(data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 1; i <= window.mockData.numberOfPins; i++) {
-      var pin = renderPin(new Pin(i));
+    for (var i = 0; i < data.length; i++) {
+      var pin = renderPin(new Pin(data[i]));
       fragment.appendChild(pin);
     }
     wrapper.appendChild(fragment);
+  }
+
+  function renderPinsError(data) {
+    var errorTemplate = document.querySelector('#error').content;
+    var error = errorTemplate.cloneNode(true);
+    var errorMessage = error.querySelector('.error__message');
+    errorMessage.textContent = data;
+    var main = document.querySelector('main');
+    main.appendChild(error);
   }
 
   function deletePins() {
@@ -56,8 +66,9 @@
   }
 
   window.pins = {
-    location: location,
+    requestData: xhrRequestData,
     render: renderPins,
+    renderError: renderPinsError,
     delete: deletePins
   };
 })();
