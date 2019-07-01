@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var MAX_QUANTITY = 4;
+  var MAX_INDEX = 4;
   var map = document.querySelector('.map');
   var wrapper = map.querySelector('.map__pins');
   var template = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -13,7 +13,7 @@
     onLoad: renderPins,
     onError: renderPinsError
   };
-  var downloadedData = [];
+  var pinsCache = [];
 
   var housingTypeFilter = map.querySelector('#housing-type');
 
@@ -45,8 +45,8 @@
   }
 
   function renderPins(data) {
-    if (downloadedData.length === 0) {
-      downloadedData = data;
+    if (pinsCache.length === 0) {
+      pinsCache = data;
     }
 
     var fragment = document.createDocumentFragment();
@@ -54,7 +54,7 @@
       var pin = renderPin(new Pin(data[i]));
       fragment.appendChild(pin);
 
-      if (i > MAX_QUANTITY) {
+      if (i > MAX_INDEX) {
         break;
       }
     }
@@ -77,15 +77,15 @@
     }
   }
 
-  function filterData(condititon) {
-    return downloadedData.slice().filter(function (data) {
-      return data.offer.type === condititon;
+  function filterPinsByType(type) {
+    return pinsCache.slice().filter(function (data) {
+      return data.offer.type === type;
     });
   }
 
   housingTypeFilter.addEventListener('change', function (evt) {
     deletePins();
-    var filteredData = filterData(evt.target.value);
+    var filteredData = filterPinsByType(evt.target.value);
     renderPins(filteredData);
   });
 
