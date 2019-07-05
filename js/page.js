@@ -18,7 +18,7 @@
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     toggleStatusOfFormsFieldsets(false);
-    window.data.request(window.pins.requestData);
+    window.data.request(window.map.requestData);
   }
 
   function deactivate() {
@@ -26,7 +26,7 @@
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     toggleStatusOfFormsFieldsets(true);
-    window.pins.delete();
+    window.map.deletePins();
     window.mainPin.isDragged = false;
     window.mainPin.resetPosition();
     window.adForm.setAddressFieldValue('round');
