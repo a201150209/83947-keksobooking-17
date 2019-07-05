@@ -8,7 +8,7 @@
   var timeInField = adForm.querySelector('#timein');
   var timeOutField = adForm.querySelector('#timeout');
   var resetButton = adForm.querySelector('.ad-form__reset');
-  var MinPrice = {
+  var offerTypeToMinPrice = {
     palace: 10000,
     house: 5000,
     flat: 1000,
@@ -16,8 +16,8 @@
   };
 
   function setMinPrice(offerType) {
-    priceField.min = MinPrice[offerType];
-    priceField.placeholder = MinPrice[offerType];
+    priceField.min = offerTypeToMinPrice[offerType];
+    priceField.placeholder = offerTypeToMinPrice[offerType];
   }
 
   function onTypeFieldChange(evt) {

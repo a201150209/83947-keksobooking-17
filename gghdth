@@ -1,0 +1,198 @@
+[33mcommit 9f9d8a8438994c1048c2085b9ebe200d5740007f[m[33m ([m[1;36mHEAD -> [m[1;32mmodule7-task1[m[33m, [m[1;31morigin/module7-task1[m[33m)[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Mon Jul 1 20:42:33 2019 +0300
+
+    Исправил замечания
+
+[33mcommit 3249f3db652eb66f3c45a3fad1c0165109fa13f8[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 30 19:04:31 2019 +0300
+
+    Задание выполнено
+
+[33mcommit f30795265786fe8f910d4ac6a3435613daacdc5a[m[33m ([m[1;31macademy/master[m[33m, [m[1;32mmaster[m[33m)[m
+Merge: 201b35d 2d26b39
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Sun Jun 30 15:55:55 2019 +0300
+
+    Merge pull request #8 from a201150209/module6-task1
+
+[33mcommit 2d26b3993efafc672cda533802e50106e25870cc[m[33m ([m[1;31morigin/module6-task1[m[33m, [m[1;32mmodule6-task1[m[33m)[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 30 15:52:09 2019 +0300
+
+    Упорядочил работу с координатами в mainPin и сделал offer перечислением MinPrice
+
+[33mcommit ed9dc0f31829ea98d3e69253d653c81d42a089e5[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 30 15:40:51 2019 +0300
+
+    Упорядочил работу с координатами в pins
+
+[33mcommit 618602a5dd9f7a71c7c4bf591071b1a0f7bd2721[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 30 15:27:34 2019 +0300
+
+    Упорядочил работу с координатами в pins
+
+[33mcommit 04184d65f85d0b91e2e67ac715dc148342c5c87c[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 30 14:38:59 2019 +0300
+
+    Вынес в data только универсальную функцию xhr request
+
+[33mcommit 584c49cda11df98837a35d7c945f166b24b2f758[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Thu Jun 27 21:15:56 2019 +0300
+
+    Задание выполнено
+
+[33mcommit 201b35d2a7764140871ac53a5414aaae0143a055[m
+Merge: d5bcbf9 24a18cb
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Wed Jun 26 17:50:33 2019 +0300
+
+    Merge pull request #7 from a201150209/module5-task2
+
+[33mcommit 24a18cb91fe503ad60a78a4e8f909749d8b6ca8d[m[33m ([m[1;31morigin/module5-task2[m[33m, [m[1;32mmodule5-task2[m[33m)[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Tue Jun 25 20:36:31 2019 +0300
+
+    Вынес мок данные в отдельный файл, переделал экспорт, упростил названия фукций и переменных (убрал приставку с названием элемента)
+
+[33mcommit 20f56cf135c5ff9b415ce77649bac7fa1ea7c8ca[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Mon Jun 24 21:33:01 2019 +0300
+
+    Удалил main.js
+
+[33mcommit 26864e9d7a5bf7d40406c75ed53d838e8f22f10d[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Mon Jun 24 21:31:54 2019 +0300
+
+    Задание выполнено
+
+[33mcommit d5bcbf97e2e98fd13aaff55ce6390c63a2de2a2d[m
+Merge: 8822210 8f14155
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Sun Jun 23 17:34:49 2019 +0300
+
+    Merge pull request #5 from a201150209/module5-task1
+
+[33mcommit 8f1415555d119e504cd5740479560528dda14fe5[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sat Jun 22 23:06:46 2019 +0300
+
+    Задание выполнено
+
+[33mcommit 88222105ad244b127afbdebbdfd2853ea22f42d9[m
+Merge: e4bde73 d1019b0
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Wed Jun 19 18:26:04 2019 +0300
+
+    Merge pull request #4 from a201150209/module4-task2
+
+[33mcommit d1019b06c2a08c395b14a8521a1fe7792a0f245b[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Mon Jun 17 21:19:01 2019 +0300
+
+    Задание выполнено
+
+[33mcommit e4bde730504a2cc4f645ac9dfdad5b1f8f426cdf[m
+Merge: 828c9e8 c554563
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Mon Jun 17 10:43:51 2019 +0300
+
+    Merge pull request #3 from a201150209/module4-task1
+
+[33mcommit c554563c03bd46abe6bf052c062f45ab1493b985[m[33m ([m[1;31morigin/module4-task1[m[33m, [m[1;32mmodule4-task1[m[33m)[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 16 21:18:57 2019 +0300
+
+    Задание выполнено
+
+[33mcommit 6a54782df1013f0cebedd02f70046baa1af58723[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sun Jun 16 20:03:17 2019 +0300
+
+    Не получается получить значение Х при событии mouseup на mainPin
+
+[33mcommit 8a3a30e4983a0b556c687ac956d4a13229300d6a[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sat Jun 15 23:32:22 2019 +0300
+
+    Исправил ошибки eslint
+
+[33mcommit 514d125426d5baae744ae7d97ac9b5cbdb6da426[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sat Jun 15 23:30:37 2019 +0300
+
+    Добавил активный и не активный режим для карты и формы объявления
+
+[33mcommit 828c9e83091ef01a8b6a2643a53548a5ee3eba28[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 6c830c3 00b61fd
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Fri Jun 14 11:07:27 2019 +0300
+
+    Merge pull request #2 from a201150209/module3-task1
+
+[33mcommit 00b61fda1da81bbfdbeaee652fb3969f0772d337[m[33m ([m[1;31morigin/module3-task1[m[33m, [m[1;32mmodule3-task1[m[33m)[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Fri Jun 14 10:51:37 2019 +0300
+
+    Заменил mockData на pinMockData
+
+[33mcommit b6622a9c53f593962d54d08f6d503b0f460148e3[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Fri Jun 14 10:40:00 2019 +0300
+
+    Заменил property на entity в параметрах
+
+[33mcommit b2dee1959a534a899e88d5abfaf3ff26628accb9[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Fri Jun 14 10:06:23 2019 +0300
+
+    Удалил лишние переменные и функции, причесал код
+
+[33mcommit 8b820eb27ca7fd54181a222cb4e1ac656c38752a[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Wed Jun 12 20:28:55 2019 +0300
+
+    Исправил ошибки для Тревиса
+
+[33mcommit 57a30193bcd0316e1f406e49e10dcd7732ab5080[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Wed Jun 12 20:24:33 2019 +0300
+
+    Исправил ошибки для Тревиса
+
+[33mcommit 84c36d89ea56c8f73c7f8e64bdb5b9c3a8472444[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Wed Jun 12 20:03:45 2019 +0300
+
+    Добавлена генерация пинов и отображение их на карте
+
+[33mcommit 6c830c3ec126a195821b5cc0f305d3182578f38f[m
+Merge: f1d65e9 1e99a17
+Author: Keks <keksobot@users.noreply.github.com>
+Date:   Sat Jun 1 23:53:03 2019 +0300
+
+    Merge pull request #1 from a201150209/module1-task1
+
+[33mcommit 1e99a17382a93815a7f995d99d6b4da90720d63b[m[33m ([m[1;31morigin/module1-task1[m[33m, [m[1;32mmodule1-task1[m[33m)[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sat Jun 1 22:23:12 2019 +0300
+
+    Добавил ссылку на профиль наставника
+
+[33mcommit 3bc21815ce55180bec27d56277fa2040cbfd4582[m
+Author: a20150209 <a20150209@gmail.com>
+Date:   Sat Jun 1 22:12:47 2019 +0300
+
+    Добавил имя наставника
+
+[33mcommit f1d65e9be7f278ec40dc60ea5d8f564e9c647b83[m
+Author: Keks <keks@htmlacademy.ru>
+Date:   Sat Jun 1 21:17:11 2019 +0300
+
+    :hatching_chick:
