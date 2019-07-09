@@ -2,19 +2,18 @@
 
 (function () {
   var MAX_PIN_INDEX = 4;
-  var ESC_KEY_CODE = 27;
   var map = document.querySelector('.map');
   var pinsWrapper = map.querySelector('.map__pins');
   var pinsTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var pinsCache = [];
   var xhrRequestData = {
     type: 'GET',
     url: 'https://js.dump.academy/keksobooking/data',
+    data: {},
     responseType: 'json',
-    timeout: 3000,
-    onLoad: renderPins,
-    onError: renderPinsError
+    onSuccess: renderPins,
+    onError: window.page.renderError
   };
-  var pinsCache = [];
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var enToRuOfferType = {
@@ -69,16 +68,7 @@
     pinsWrapper.appendChild(fragment);
   }
 
-  function renderPinsError(data) {
-    var errorTemplate = document.querySelector('#error').content;
-    var error = errorTemplate.cloneNode(true);
-    var errorMessage = error.querySelector('.error__message');
-    errorMessage.textContent = data;
-    var main = document.querySelector('main');
-    main.appendChild(error);
-  }
-
-  function deletePins() {
+  function removePins() {
     var pins = map.querySelectorAll('.map__pin');
     for (var i = 1; i < pins.length; i++) {
       pins[i].remove();
@@ -168,7 +158,7 @@
 
   function onDocumentKeyup(evt) {
     evt.preventDefault();
-    if (evt.keyCode === ESC_KEY_CODE) {
+    if (evt.keyCode === window.page.KeyCode.ESC) {
       removeActivePopup();
       document.removeEventListener('keyup', onDocumentKeyup);
     }
@@ -176,7 +166,7 @@
 
   housingTypeFilter.addEventListener('change', function (evt) {
     evt.preventDefault();
-    deletePins();
+    removePins();
     var filteredData = filterPinsByType(evt.target.value);
     renderPins(filteredData);
   });
@@ -184,7 +174,8 @@
   window.map = {
     requestData: xhrRequestData,
     renderPins: renderPins,
-    renderPinsError: renderPinsError,
-    deletePins: deletePins
+    removePins: removePins,
+    removeActivePopup: removeActivePopup
+
   };
 })();
