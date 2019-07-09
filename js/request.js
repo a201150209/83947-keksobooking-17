@@ -1,34 +1,34 @@
 'use strict';
 
 (function () {
-  function createXhrRequest(data) {
+  function createXhrRequest(setting) {
     var xhr = new XMLHttpRequest();
-    xhr.responseType = data.responseType;
-    xhr.timeout = data.timeout;
+    xhr.responseType = setting.responseType;
+    xhr.timeout = 3000;
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        data.onLoad(xhr.response);
+        setting.onSuccess(xhr.response);
       } else {
-        data.onError('Произошла ошибка загрузки данных. Статус ответа: ' + xhr.status);
+        setting.onError('Не удалось соединиться с сервером. Статус ответа: ' + xhr.status);
       }
     });
 
     xhr.addEventListener('error', function () {
-      data.onError('Произошла ошибка соединения');
+      setting.onError('Не удалось соединиться с сервером');
     });
 
     xhr.addEventListener('timeout', function () {
-      data.onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      setting.onError('Запрос не успел выполниться за ' + xhr.timeout / 1000 + ' секунды');
     });
 
-    xhr.open(data.type, data.url);
-    xhr.send();
+    xhr.open(setting.type, setting.url);
+    xhr.send(setting.data);
 
     return xhr;
   }
 
-  window.data = {
-    request: createXhrRequest
+  window.request = {
+    create: createXhrRequest
   };
 })();
