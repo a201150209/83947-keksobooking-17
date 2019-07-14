@@ -23,8 +23,158 @@
     palace: 'Дворец'
   };
 
+  var previousFilter;
+  var filteredPinsCache = [];
+
   var filtersWrapper = map.querySelector('.map__filters-container');
-  var housingTypeFilter = filtersWrapper.querySelector('#housing-type');
+
+  var Maps = [
+    {
+      filter: filtersWrapper.querySelector('#housing-type'),
+      filterPins: function (rule) {
+        filteredData = filteredPinsCache.filter(function (data) {
+          return data.offer.type === rule;
+        });
+      }
+    },
+    {
+      filter: filtersWrapper.querySelector('#housing-price'),
+      filterPins: function (rule) {
+        if (rule === 'low') {
+          filteredData = filteredPinsCache.filter(function (data) {
+            return data.offer.price < 10000;
+          });
+        } else if (rule === 'middle') {
+          filteredData = filteredPinsCache.filter(function (data) {
+            return data.offer.price > 10000 && data.offer.price < 50000;
+          });
+        } else if (rule === 'high') {
+          filteredData = filteredPinsCache.filter(function (data) {
+            return data.offer.price > 50000;
+          });
+        }
+      }
+    },
+    {
+      filter: filtersWrapper.querySelector('#housing-rooms'),
+      filterPins: function (rule) {
+        filteredData = filteredPinsCache.filter(function (data) {
+          return data.offer.rooms === Number(rule);
+        });
+      }
+    },
+    {
+      filter: filtersWrapper.querySelector('#housing-guests'),
+      filterPins: function (rule) {
+        filteredData = filteredPinsCache.filter(function (data) {
+          return data.offer.guests === Number(rule);
+        });
+      }
+    },
+    new FeatureFilters(filtersWrapper.querySelector('#filter-wifi')),
+    new FeatureFilters(filtersWrapper.querySelector('#filter-dishwasher'))
+  ];
+
+  console.log(Maps);
+
+  function FeatureFilters(filter) {
+    this.filter = filter;
+  }
+  FeatureFilters.prototype.filterPin = function (rule) {
+    filteredData = filteredPinsCache.filter(function (data) {
+      for (var i = 0; i < data.offer.features.length; i++) {
+        return data.offer.features[i] === rule;
+      }
+    });
+  };
+
+  var Filter = {
+    housingType: filtersWrapper.querySelector('#housing-type'),
+    housingPrice: filtersWrapper.querySelector('#housing-price'),
+    housingRooms: filtersWrapper.querySelector('#housing-rooms'),
+    housingGuests: filtersWrapper.querySelector('#housing-guests'),
+    wifi: filtersWrapper.querySelector('#filter-wifi'),
+    dishwasher: filtersWrapper.querySelector('#filter-dishwasher'),
+    parking: filtersWrapper.querySelector('#filter-parking'),
+    washer: filtersWrapper.querySelector('#filter-washer'),
+    elevator: filtersWrapper.querySelector('#filter-elevator'),
+    conditioner: filtersWrapper.querySelector('#filter-conditioner')
+  };
+
+  filtersWrapper.addEventListener('change', function (evt) {
+    evt.preventDefault();
+    var currentFilter = evt.target;
+    console.log(currentFilter);
+    var currentFilterRule = currentFilter.value;
+    var isAnotherFilterWasChanged = currentFilter !== previousFilter;
+
+    if (!isAnotherFilterWasChanged) {
+      filteredPinsCache = pinsCache.slice();
+    } else if (isAnotherFilterWasChanged) {
+      filteredPinsCache = [];
+    }
+
+    Maps.forEach(function (item) {
+      if (currentFilter === item.filter) {
+        console.log(item);
+        item.filterPins(currentFilterRule);
+      }
+    });
+
+    /* if (currentFilter === Filter.housingType) {
+      filteredData = filteredPinsCache.filter(function (data) {
+        return data.offer.type === currentFilterRule;
+      });
+    }
+
+    if (currentFilter === Filter.housingPrice) {
+      if (currentFilterRule === 'low') {
+        filteredData = filteredPinsCache.filter(function (data) {
+          return data.offer.price < 10000;
+        });
+      } else if (currentFilterRule === 'middle') {
+        filteredData = filteredPinsCache.filter(function (data) {
+          return data.offer.price > 10000 && data.offer.price < 50000;
+        });
+      } else if (currentFilterRule === 'high') {
+        filteredData = filteredPinsCache.filter(function (data) {
+          return data.offer.price > 50000;
+        });
+      }
+    }
+
+    if (currentFilter === Filter.housingRooms) {
+      filteredData = filteredPinsCache.filter(function (data) {
+        return data.offer.rooms === Number(currentFilterRule);
+      });
+    }
+
+    if (currentFilter === Filter.housingGuests) {
+      filteredData = filteredPinsCache.filter(function (data) {
+        return data.offer.guests === Number(currentFilterRule);
+      });
+    }
+
+    if (currentFilter === Filter.wifi ||
+      currentFilter === Filter.dishwasher ||
+      currentFilter === Filter.parking ||
+      currentFilter === Filter.washer ||
+      currentFilter === Filter.elevator ||
+      currentFilter === Filter.conditioner) {
+      filteredData = filteredPinsCache.filter(function (data) {
+        for (var i = 0; i < data.offer.features.length; i++) {
+          return data.offer.features[i] === currentFilterRule;
+        }
+      });
+    }*/
+    console.log(filteredData);
+    removePins();
+    renderPins(filteredData);
+    previousFilter = evt.target;
+
+  }, true);
+
+  var filteredData = [];
 
   function renderPin(entity) {
     var pin = pinsTemplate.cloneNode(true);
@@ -143,12 +293,6 @@
     return card;
   }
 
-  function filterPinsByType(type) {
-    return pinsCache.slice().filter(function (data) {
-      return data.offer.type === type;
-    });
-  }
-
   function removeActivePopup() {
     var activePopup = map.querySelector('.popup');
     if (activePopup) {
@@ -164,18 +308,87 @@
     }
   }
 
-  housingTypeFilter.addEventListener('change', function (evt) {
+  /* function addChangeEventListenerForFilter(filter) {
+    filter.addEventListener('change', onFilterChange);
+  }
+
+
+   function onFilterChange(evt) {
     evt.preventDefault();
     removePins();
-    var filteredData = filterPinsByType(evt.target.value);
+    filterPins(evt.target, evt.target.value);
     renderPins(filteredData);
-  });
+  }
+
+
+  function filterPins(filter, condition) {
+    var copy = pinsCache.slice();
+
+    if (filter === Filter.housingType) {
+      filteredData = copy.filter(function (data) {
+        return data.offer.type === condition;
+      });
+    }
+
+    if (filter === Filter.housingPrice) {
+      if (condition === 'low') {
+        filteredData = copy.filter(function (data) {
+          return data.offer.price < 10000;
+        });
+      } else if (condition === 'middle') {
+        filteredData = copy.filter(function (data) {
+          return data.offer.price > 10000 && data.offer.price < 50000;
+        });
+      } else if (condition === 'high') {
+        filteredData = copy.filter(function (data) {
+          return data.offer.price > 50000;
+        });
+      }
+    }
+
+    if (filter === Filter.housingRooms) {
+      filteredData = copy.filter(function (data) {
+        return data.offer.rooms === Number(condition);
+      });
+    }
+
+    if (filter === Filter.housingGuests) {
+      filteredData = copy.filter(function (data) {
+        return data.offer.guests === Number(condition);
+      });
+    }
+
+    if (filter === Filter.wifi ||
+      filter === Filter.dishwasher ||
+      filter === Filter.parking ||
+      filter === Filter.washer ||
+      filter === Filter.elevator ||
+      filter === Filter.conditioner) {
+      filteredData = copy.filter(function (data) {
+        for (var i = 0; i < data.offer.features.length; i++) {
+          return data.offer.features[i] === condition;
+        }
+      });
+    }
+
+    if (condition === 'any') {
+      filteredData = pinsCache.slice();
+    }
+
+    console.log(filteredData);
+  }
+
+  for (var filter in Filter) {
+    if (filter) {
+      addChangeEventListenerForFilter(Filter[filter]);
+    }
+  }*/
+
 
   window.map = {
     requestData: xhrRequestData,
     renderPins: renderPins,
     removePins: removePins,
     removeActivePopup: removeActivePopup
-
   };
 })();
