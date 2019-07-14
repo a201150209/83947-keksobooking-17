@@ -641,6 +641,15 @@ fieldset {
   margin-right: 14px;
 }
 
+.ad-form .ad-form__error {
+  border: 2px solid #f00;
+}
+
+.ad-form .ad-form__error-message {
+  color: #f00;
+  font-size: 1em;
+}
+
 .features legend {
   padding-bottom: 5px;
 }
