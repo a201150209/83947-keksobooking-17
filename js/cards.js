@@ -1,52 +1,52 @@
 'use strict';
+
+var Feature = {
+  TAG: 'li',
+  FIRST_CLASS: 'popup__feature',
+  SECOND_CLASS: 'popup__feature--'
+};
+var Photo = {
+  TAG: 'img',
+  CLASS: 'popup__photo',
+  WIDTH: 45,
+  HEIGHT: 40,
+  ALT: 'Фотография жилья'
+};
+var enToRuOfferType = {
+  'bungalo': 'Бунгало',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'palace': 'Дворец'
+};
 var map = document.querySelector('.map');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-var enToRuOfferType = {
-  bungalo: 'Бунгало',
-  flat: 'Квартира',
-  house: 'Дом',
-  palace: 'Дворец'
-};
-
-function removeChilds(parent) {
-  var children = parent.children;
-  while (children.length > 0) {
-    children[0].remove();
-  }
-}
 
 function renderFeatures(features) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < features.length; i++) {
-    var feature = document.createElement('li');
-    feature.classList.add('popup__feature');
-    feature.classList.add('popup__feature--' + features[i]);
-    fragment.appendChild(feature);
-  }
+  features.forEach(function (feature) {
+    var element = document.createElement(Feature.TAG);
+    element.classList.add(Feature.FIRST_CLASS);
+    element.classList.add(Feature.SECOND_CLASS + feature);
+    fragment.appendChild(element);
+  });
 
   return fragment;
 }
 
 function renderPhotos(sources) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < sources.length; i++) {
-    var photo = document.createElement('img');
-    photo.classList.add('popup__photo');
-    photo.src = sources[i];
-    photo.width = 45;
-    photo.height = 40;
-    photo.alt = 'Фотография жилья';
+  sources.forEach(function (source) {
+    var photo = document.createElement(Photo.TAG);
+    photo.classList.add(Photo.CLASS);
+    photo.src = source;
+    photo.width = Photo.WIDTH;
+    photo.height = Photo.HEIGHT;
+    photo.alt = Photo.ALT;
     fragment.appendChild(photo);
-  }
-  return fragment;
-}
+  });
 
-function removeActiveCard() {
-  var activeCard = map.querySelector('.popup');
-  if (activeCard) {
-    activeCard.remove();
-  }
+  return fragment;
 }
 
 function renderCard(entity) {
@@ -70,10 +70,10 @@ function renderCard(entity) {
   type.textContent = enToRuOfferType[entity.offer.type];
   capacity.textContent = entity.offer.rooms + ' комнаты для ' + entity.offer.guests + ' гостей';
   time.textContent = 'Заезд после ' + entity.offer.checkin + ', выезд до ' + entity.offer.checkout;
-  removeChilds(features);
+  window.utils.removeChilds(features);
   features.appendChild(renderFeatures(entity.offer.features));
   description.textContent = entity.offer.description;
-  removeChilds(photos);
+  window.utils.removeChilds(photos);
   photos.appendChild(renderPhotos(entity.offer.photos));
 
   closeButton.addEventListener('click', function (evt) {
@@ -84,6 +84,23 @@ function renderCard(entity) {
   return card;
 }
 
-window.card = {
-  render: renderCard
+function removeActiveCard() {
+  var activeCard = map.querySelector('.popup');
+  if (activeCard) {
+    activeCard.remove();
+    document.removeEventListener('keyup', onDocumentKeyup);
+  }
+}
+
+function onDocumentKeyup(evt) {
+  evt.preventDefault();
+  if (evt.keyCode === window.page.KeyCode.ESC) {
+    removeActiveCard();
+  }
+}
+
+window.cards = {
+  render: renderCard,
+  removeActive: removeActiveCard,
+  onDocumentKeyup: onDocumentKeyup
 };

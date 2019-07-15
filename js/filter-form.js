@@ -68,7 +68,7 @@
     evt.preventDefault();
     var currentFilter = evt.target;
     var isResetFilter = currentFilter.value === RESET_FILTER_VALUE || currentFilter.checked === false;
-    filteredPinsCache = window.map.pinsCache.slice();
+    filteredPinsCache = window.pins.cache.slice();
 
     for (var i = 0; i < filters.length; i++) {
       var isCurrentFilter = currentFilter === filters[i].element;
@@ -87,8 +87,8 @@
       }
     });
 
-    window.map.removePins();
-    window.map.renderPins(filteredPinsCache);
+    window.pins.remove();
+    window.pins.render(filteredPinsCache);
   }
 
   FeatureFilter.prototype.filterPins = function (rule) {

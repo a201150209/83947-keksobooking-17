@@ -22,7 +22,7 @@
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     toggleStatusOfFormsFieldsets(false);
-    window.request.create(window.map.requestData);
+    window.xhr.create(window.pins.requestData);
   }
 
   function deactivate() {
@@ -30,8 +30,8 @@
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     toggleStatusOfFormsFieldsets(true);
-    window.map.removePins();
-    window.map.removeActivePopup();
+    window.pins.remove();
+    window.cards.removeActive();
     window.mainPin.isDragged = false;
     window.mainPin.resetPosition();
     window.adForm.setAddressFieldValue('round');

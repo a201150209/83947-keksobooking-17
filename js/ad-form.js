@@ -73,7 +73,7 @@
   function onAdFormSubmit(evt) {
     evt.preventDefault();
     xhrRequestData.data = new FormData(document.forms.adForm);
-    window.request.create(xhrRequestData);
+    window.xhr.create(xhrRequestData);
   }
 
   function onAdFormReset() {
