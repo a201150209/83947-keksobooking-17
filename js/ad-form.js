@@ -2,6 +2,7 @@
 
 (function () {
   var adForm = document.querySelector('.ad-form');
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var addressField = adForm.querySelector('#address');
   var priceField = adForm.querySelector('#price');
   var roomNumberField = adForm.querySelector('#room_number');
@@ -21,7 +22,7 @@
     '3': ['3', '2', '1'],
     '100': ['0']
   };
-  var xhrRequestData = {
+  var xhrData = {
     type: 'POST',
     url: 'https://js.dump.academy/keksobooking',
     data: {},
@@ -72,8 +73,8 @@
 
   function onAdFormSubmit(evt) {
     evt.preventDefault();
-    xhrRequestData.data = new FormData(document.forms.adForm);
-    window.xhr.create(xhrRequestData);
+    xhrData.data = new FormData(document.forms.adForm);
+    window.xhr.create(xhrData);
   }
 
   function onAdFormReset() {
@@ -83,6 +84,17 @@
   function setAddressFieldValue(pinType) {
     var pinCoordinates = window.mainPin.getCoordinates(pinType);
     addressField.value = pinCoordinates.x + ', ' + pinCoordinates.y;
+  }
+
+  function toggleFieldsets(status) {
+    switch (status) {
+      case 'activate':
+        window.utils.toggleStatusOfElements(adFormFieldsets, false);
+        break;
+      case 'deactivate':
+        window.utils.toggleStatusOfElements(adFormFieldsets, true);
+        break;
+    }
   }
 
   /* function checkValidity(field) {
@@ -99,17 +111,24 @@
   }*/
 
   // Может быть нужно добавлять обработчики после активации страницы
+
+  function addAdFormFieldsListeners() {
+    typeField.addEventListener('change', onTypeFieldChange);
+    roomNumberField.addEventListener('change', onRoomNumberFieldChange);
+    capacityField.addEventListener('change', onCapacityFieldChange);
+    timeInField.addEventListener('change', onTimeInFieldChange);
+    timeOutField.addEventListener('change', onTimeOutFieldChange);
+    adForm.addEventListener('submit', onAdFormSubmit);
+    adForm.addEventListener('reset', onAdFormReset);
+  }
+
   setMinPrice(typeField.value);
   setAddressFieldValue('round');
-  typeField.addEventListener('change', onTypeFieldChange);
-  roomNumberField.addEventListener('change', onRoomNumberFieldChange);
-  capacityField.addEventListener('change', onCapacityFieldChange);
-  timeInField.addEventListener('change', onTimeInFieldChange);
-  timeOutField.addEventListener('change', onTimeOutFieldChange);
-  adForm.addEventListener('submit', onAdFormSubmit);
-  adForm.addEventListener('reset', onAdFormReset);
+  toggleFieldsets('deactivate');
 
   window.adForm = {
+    toggleFieldsets: toggleFieldsets,
     setAddressFieldValue: setAddressFieldValue,
+    addFieldsListeners: addAdFormFieldsListeners
   };
 })();

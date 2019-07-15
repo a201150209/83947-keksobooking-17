@@ -1,11 +1,14 @@
 'use strict';
 
 (function () {
-  var MAX_PIN_INDEX = 4;
+  var Pins = {
+    MAX_INDEX: 4,
+    AVATAR_SELECTOR: 'img'
+  };
   var map = document.querySelector('.map');
   var pinsWrapper = map.querySelector('.map__pins');
   var pinsTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  var xhrRequestData = {
+  var xhrData = {
     type: 'GET',
     url: 'https://js.dump.academy/keksobooking/data',
     data: {},
@@ -14,10 +17,9 @@
     onError: window.page.renderError
   };
 
-
   function renderPin(entity) {
     var pin = pinsTemplate.cloneNode(true);
-    var avatar = pin.querySelector('img');
+    var avatar = pin.querySelector(Pins.AVATAR_SELECTOR);
     var avatarWidth = avatar.width;
     var avatarHeight = avatar.height;
 
@@ -41,20 +43,19 @@
 
   function renderPins(data) {
     var fragment = document.createDocumentFragment();
+    var isDataFromServer = window.pins.cache.length === 0;
 
-    if (window.pins.cache.length === 0) {
+    if (isDataFromServer) {
       window.pins.cache = data;
+      window.filterForm.toggleFilters('activate');
     }
 
-    for (var i = 0; i < data.length; i++) {
-      var pin = renderPin(data[i]);
-      addPinClickListener(pin, data[i]);
+    data.slice(0, Pins.MAX_INDEX).forEach(function (entity) {
+      var pin = renderPin(entity);
+      addPinClickListener(pin, entity);
       fragment.appendChild(pin);
+    });
 
-      if (i >= MAX_PIN_INDEX) {
-        break;
-      }
-    }
     pinsWrapper.appendChild(fragment);
   }
 
@@ -67,7 +68,7 @@
   }
 
   window.pins = {
-    requestData: xhrRequestData,
+    requestData: xhrData,
     cache: [],
     render: renderPins,
     remove: removePins

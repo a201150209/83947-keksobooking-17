@@ -9,19 +9,12 @@
     ESC: 27
   };
 
-  function toggleStatusOfFormsFieldsets(status) {
-    var adFormFieldsets = adForm.querySelectorAll('fieldset');
-    var mapFilters = map.querySelector('.map__filters');
-    for (var i = 0; i < adFormFieldsets.length; i++) {
-      adFormFieldsets[i].disabled = status;
-    }
-    mapFilters.disabled = status;
-  }
 
   function activate() {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    toggleStatusOfFormsFieldsets(false);
+    window.adForm.toggleFieldsets('activate');
+    window.adForm.addFieldsListeners();
     window.xhr.create(window.pins.requestData);
   }
 
@@ -29,8 +22,10 @@
     // Для себя: сделать фукцию ресет для каждого блока, уточнить насчет сброса offer
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
-    toggleStatusOfFormsFieldsets(true);
+    window.adForm.toggleFieldsets('deactivate');
+    window.filterForm.toggleFilters('deactivate');
     window.pins.remove();
+    window.pins.cache.length = 0;
     window.cards.removeActive();
     window.mainPin.isDragged = false;
     window.mainPin.resetPosition();
@@ -90,8 +85,6 @@
       removeActivePopup();
     }
   }
-
-  toggleStatusOfFormsFieldsets(true);
 
   window.page = {
     KeyCode: KeyCode,

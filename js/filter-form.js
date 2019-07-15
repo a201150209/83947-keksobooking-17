@@ -2,6 +2,7 @@
 
 (function () {
   var RESET_FILTER_VALUE = 'any';
+  var lastTimeout;
   var filtersWrapper = document.querySelector('.map__filters-container');
   var filteredPinsCache = [];
   var filters = [
@@ -58,6 +59,9 @@
     new FeatureFilter(filtersWrapper.querySelector('#filter-elevator')),
     new FeatureFilter(filtersWrapper.querySelector('#filter-conditioner'))
   ];
+  var filterElements = filters.map(function (element) {
+    return element.element;
+  });
 
   function FeatureFilter(element) {
     this.element = element;
@@ -65,6 +69,16 @@
   }
 
   function onfilterWrapperChange(evt) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(function () {
+      filterPins(evt);
+    }, 500);
+
+  }
+
+  function filterPins(evt) {
     evt.preventDefault();
     var currentFilter = evt.target;
     var isResetFilter = currentFilter.value === RESET_FILTER_VALUE || currentFilter.checked === false;
@@ -87,8 +101,20 @@
       }
     });
 
+    window.cards.removeActive();
     window.pins.remove();
     window.pins.render(filteredPinsCache);
+  }
+
+  function toggleFilters(status) {
+    switch (status) {
+      case 'activate':
+        window.utils.toggleStatusOfElements(filterElements, false);
+        break;
+      case 'deactivate':
+        window.utils.toggleStatusOfElements(filterElements, true);
+        break;
+    }
   }
 
   FeatureFilter.prototype.filterPins = function (rule) {
@@ -102,6 +128,11 @@
     });
   };
 
+  toggleFilters('deactivate');
   filtersWrapper.addEventListener('change', onfilterWrapperChange, true);
+
+  window.filterForm = {
+    toggleFilters: toggleFilters
+  };
 })();
 
