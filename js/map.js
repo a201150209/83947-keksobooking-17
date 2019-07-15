@@ -47,7 +47,7 @@
           });
         } else if (rule === 'middle') {
           filteredPinsCache = filteredPinsCache.filter(function (data) {
-            return data.offer.price > 10000 && data.offer.price < 50000;
+            return data.offer.price >= 10000 && data.offer.price <= 50000;
           });
         } else if (rule === 'high') {
           filteredPinsCache = filteredPinsCache.filter(function (data) {
@@ -98,32 +98,31 @@
     });
   };
 
-  FeatureFilter.prototype.changeStatus = function (element) {
-    if (element.checked === true) {
-
-    }
-  };
-
 
   filtersWrapper.addEventListener('change', function (evt) {
     evt.preventDefault();
     var currentFilter = evt.target;
-    var currentFilterRule = currentFilter.value;
-    var isResetFilter = currentFilter.value === 'any';
+    var isResetFilter = currentFilter.value === 'any' || currentFilter.checked === false;
+    filteredPinsCache = pinsCache.slice();
 
-    filters.forEach(function (filter) {
 
-      if (filter.active && currentFilter !== filter.element) {
-        filter.filterPins(filter.element.value);
+    for (var i = 0; i < filters.length; i++) {
+      var isCurrentFilter = currentFilter === filters[i].element;
+      if (isResetFilter && isCurrentFilter) {
+        filters[i].active = false;
+        break;
+      } else if (isCurrentFilter) {
+        filters[i].active = true;
+        break;
       }
+    }
 
-      if (currentFilter === filter.element) {
-        filter.filterPins(currentFilterRule);
-        filter.active = true;
+    for (var k = 0; k < filters.length; k++) {
+      if (filters[k].active === true) {
+        filters[k].filterPins(filters[k].element.value);
       }
-    });
+    }
 
-    console.log(filteredPinsCache);
     removePins();
     renderPins(filteredPinsCache);
   }, true);
@@ -156,7 +155,6 @@
   function renderPins(data) {
     if (pinsCache.length === 0) {
       pinsCache = data;
-      filteredPinsCache = pinsCache.slice();
     }
 
     var fragment = document.createDocumentFragment();
@@ -165,7 +163,7 @@
       addPinClickListener(pin, data[i]);
       fragment.appendChild(pin);
 
-      if (i > MAX_PIN_INDEX) {
+      if (i >= MAX_PIN_INDEX) {
         break;
       }
     }
