@@ -1,6 +1,13 @@
 'use strict';
-
+var map = document.querySelector('.map');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var enToRuOfferType = {
+  bungalo: 'Бунгало',
+  flat: 'Квартира',
+  house: 'Дом',
+  palace: 'Дворец'
+};
 
 function removeChilds(parent) {
   var children = parent.children;
@@ -35,6 +42,13 @@ function renderPhotos(sources) {
   return fragment;
 }
 
+function removeActiveCard() {
+  var activeCard = map.querySelector('.popup');
+  if (activeCard) {
+    activeCard.remove();
+  }
+}
+
 function renderCard(entity) {
   var card = cardTemplate.cloneNode(true);
   var avatar = card.querySelector('.popup__avatar');
@@ -64,8 +78,12 @@ function renderCard(entity) {
 
   closeButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    removeActivePopup();
+    removeActiveCard();
   });
 
   return card;
 }
+
+window.card = {
+  render: renderCard
+};
