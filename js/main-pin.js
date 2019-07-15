@@ -1,13 +1,17 @@
 'use strict';
 
 (function () {
-  var STEM_HEIGHT = 19;
+  var MainPin = {
+    START: 'round',
+    AFTER_ACTIVATE: 'marker',
+    STEM_HEIGHT: 19
+  };
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
-  var width = mainPin.querySelector('img').offsetWidth;
-  var height = mainPin.querySelector('img').offsetHeight;
-  var coordinates = {
-    start: getCoordinates('round'),
+  var mainPinWidth = mainPin.querySelector('img').offsetWidth;
+  var mainPinHeight = mainPin.querySelector('img').offsetHeight;
+  var mainPinCoordinates = {
+    start: getCoordinates(MainPin.START),
     current: {
       x: undefined,
       y: undefined
@@ -31,15 +35,15 @@
     var positionLeft = parseInt(mainPin.style.left, 10);
     var positionTop = parseInt(mainPin.style.top, 10);
     var currentCoordinates = {
-      x: (Math.floor(positionLeft + width / 2)).toString()
+      x: (Math.floor(positionLeft + mainPinWidth / 2)).toString()
     };
 
     switch (pinType) {
-      case 'round':
-        currentCoordinates.y = (Math.floor(positionTop + height / 2)).toString();
+      case MainPin.START:
+        currentCoordinates.y = (Math.floor(positionTop + mainPinHeight / 2)).toString();
         break;
-      case 'marker':
-        currentCoordinates.y = (Math.floor(positionTop + height + STEM_HEIGHT)).toString();
+      case MainPin.AFTER_ACTIVATE:
+        currentCoordinates.y = (Math.floor(positionTop + mainPinHeight + MainPin.STEM_HEIGHT)).toString();
         break;
     }
 
@@ -49,19 +53,19 @@
   function setPosition(currentCoordinates) {
     var pageTopOffset = window.pageYOffset;
     // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
-    mainPin.style.left = (currentCoordinates.x - mapLeftMargin - height / 2).toString() + 'px';
-    mainPin.style.top = (currentCoordinates.y + pageTopOffset - height - STEM_HEIGHT).toString() + 'px';
+    mainPin.style.left = (currentCoordinates.x - mapLeftMargin - mainPinHeight / 2).toString() + 'px';
+    mainPin.style.top = (currentCoordinates.y + pageTopOffset - mainPinHeight - MainPin.STEM_HEIGHT).toString() + 'px';
   }
 
   function resetPosition() {
-    mainPin.style.left = (coordinates.start.x - width / 2).toString() + 'px';
-    mainPin.style.top = (coordinates.start.y - height / 2).toString() + 'px';
+    mainPin.style.left = (mainPinCoordinates.start.x - mainPinWidth / 2).toString() + 'px';
+    mainPin.style.top = (mainPinCoordinates.start.y - mainPinHeight / 2).toString() + 'px';
   }
 
   function onMainPinMouseDown(evt) {
     evt.preventDefault();
-    coordinates.current.x = evt.clientX;
-    coordinates.current.y = evt.clientY;
+    mainPinCoordinates.current.x = evt.clientX;
+    mainPinCoordinates.current.y = evt.clientY;
 
     if (!window.mainPin.isDragged) {
       window.page.activate();
@@ -74,21 +78,21 @@
 
   function onMapMouseMove(evt) {
     evt.preventDefault();
-    coordinates.current.x = evt.clientX;
-    coordinates.current.y = evt.clientY;
+    mainPinCoordinates.current.x = evt.clientX;
+    mainPinCoordinates.current.y = evt.clientY;
 
     var pageTopOffset = window.pageYOffset;
-    var positionTopTooHigh = (coordinates.current.y + pageTopOffset) <= coordinates.min.y;
-    var positionTopTooLow = (coordinates.current.y + pageTopOffset) >= coordinates.max.y;
+    var positionTopTooHigh = (mainPinCoordinates.current.y + pageTopOffset) <= mainPinCoordinates.min.y;
+    var positionTopTooLow = (mainPinCoordinates.current.y + pageTopOffset) >= mainPinCoordinates.max.y;
 
     if (positionTopTooHigh) {
-      coordinates.current.y = coordinates.min.y - pageTopOffset;
+      mainPinCoordinates.current.y = mainPinCoordinates.min.y - pageTopOffset;
     } else if (positionTopTooLow) {
-      coordinates.current.y = coordinates.max.y - pageTopOffset;
+      mainPinCoordinates.current.y = mainPinCoordinates.max.y - pageTopOffset;
     }
 
-    window.adForm.setAddressFieldValue('marker');
-    setPosition(coordinates.current);
+    window.adForm.setAddressFieldValue(MainPin.AFTER_ACTIVATE);
+    setPosition(mainPinCoordinates.current);
     mainPin.removeEventListener('mousedown', onMainPinMouseDown);
   }
 
@@ -97,7 +101,7 @@
     map.removeEventListener('mousemove', onMapMouseMove);
     document.removeEventListener('mouseup', onDocumentMouseUp);
     mainPin.addEventListener('mousedown', onMainPinMouseDown);
-    window.adForm.setAddressFieldValue('marker');
+    window.adForm.setAddressFieldValue(MainPin.AFTER_ACTIVATE);
   }
 
   mainPin.addEventListener('mousedown', onMainPinMouseDown);

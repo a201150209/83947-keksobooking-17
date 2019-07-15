@@ -28,7 +28,7 @@
     return xhr;
   }
 
-  window.request = {
+  window.xhr = {
     create: createXhrRequest
   };
 })();
