@@ -23,110 +23,7 @@
     palace: 'Дворец'
   };
 
-  var filteredPinsCache = [];
-
   var filtersWrapper = map.querySelector('.map__filters-container');
-
-  var filters = [
-    {
-      element: filtersWrapper.querySelector('#housing-type'),
-      active: false,
-      filterPins: function (rule) {
-        filteredPinsCache = filteredPinsCache.filter(function (data) {
-          return data.offer.type === rule;
-        });
-      }
-    },
-    {
-      element: filtersWrapper.querySelector('#housing-price'),
-      active: false,
-      filterPins: function (rule) {
-        if (rule === 'low') {
-          filteredPinsCache = filteredPinsCache.filter(function (data) {
-            return data.offer.price < 10000;
-          });
-        } else if (rule === 'middle') {
-          filteredPinsCache = filteredPinsCache.filter(function (data) {
-            return data.offer.price >= 10000 && data.offer.price <= 50000;
-          });
-        } else if (rule === 'high') {
-          filteredPinsCache = filteredPinsCache.filter(function (data) {
-            return data.offer.price > 50000;
-          });
-        }
-      }
-    },
-    {
-      element: filtersWrapper.querySelector('#housing-rooms'),
-      active: false,
-      filterPins: function (rule) {
-        filteredPinsCache = filteredPinsCache.filter(function (data) {
-          return data.offer.rooms === Number(rule);
-        });
-      }
-    },
-    {
-      element: filtersWrapper.querySelector('#housing-guests'),
-      active: false,
-      filterPins: function (rule) {
-        filteredPinsCache = filteredPinsCache.filter(function (data) {
-          return data.offer.guests === Number(rule);
-        });
-      }
-    },
-    new FeatureFilter(filtersWrapper.querySelector('#filter-wifi')),
-    new FeatureFilter(filtersWrapper.querySelector('#filter-dishwasher')),
-    new FeatureFilter(filtersWrapper.querySelector('#filter-parking')),
-    new FeatureFilter(filtersWrapper.querySelector('#filter-washer')),
-    new FeatureFilter(filtersWrapper.querySelector('#filter-elevator')),
-    new FeatureFilter(filtersWrapper.querySelector('#filter-conditioner'))
-  ];
-
-  function FeatureFilter(element) {
-    this.element = element;
-    this.active = false;
-  }
-
-  FeatureFilter.prototype.filterPins = function (rule) {
-    filteredPinsCache = filteredPinsCache.filter(function (data) {
-      for (var i = 0; i < data.offer.features.length; i++) {
-        if (data.offer.features[i] === rule) {
-          break;
-        }
-      }
-      return data.offer.features[i];
-    });
-  };
-
-
-  filtersWrapper.addEventListener('change', function (evt) {
-    evt.preventDefault();
-    var currentFilter = evt.target;
-    var isResetFilter = currentFilter.value === 'any' || currentFilter.checked === false;
-    filteredPinsCache = pinsCache.slice();
-
-
-    for (var i = 0; i < filters.length; i++) {
-      var isCurrentFilter = currentFilter === filters[i].element;
-      if (isResetFilter && isCurrentFilter) {
-        filters[i].active = false;
-        break;
-      } else if (isCurrentFilter) {
-        filters[i].active = true;
-        break;
-      }
-    }
-
-    for (var k = 0; k < filters.length; k++) {
-      if (filters[k].active === true) {
-        filters[k].filterPins(filters[k].element.value);
-      }
-    }
-
-    removePins();
-    renderPins(filteredPinsCache);
-  }, true);
-
 
   function renderPin(entity) {
     var pin = pinsTemplate.cloneNode(true);
@@ -155,6 +52,7 @@
   function renderPins(data) {
     if (pinsCache.length === 0) {
       pinsCache = data;
+      window.map.pinsCache = pinsCache;
     }
 
     var fragment = document.createDocumentFragment();
@@ -262,6 +160,7 @@
 
   window.map = {
     requestData: xhrRequestData,
+    pinsCache: pinsCache,
     renderPins: renderPins,
     removePins: removePins,
     removeActivePopup: removeActivePopup
