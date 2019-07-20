@@ -1,12 +1,10 @@
 'use strict';
 
-var Feature = {
-  TAG: 'li',
-  FIRST_CLASS: 'popup__feature',
-  SECOND_CLASS: 'popup__feature--'
+var FeatureClass = {
+  FIRST: 'popup__feature',
+  SECOND: 'popup__feature--'
 };
 var Photo = {
-  TAG: 'img',
   CLASS: 'popup__photo',
   WIDTH: 45,
   HEIGHT: 40,
@@ -25,9 +23,9 @@ var cardTemplate = document.querySelector('#card').content.querySelector('.map__
 function renderFeatures(features) {
   var fragment = document.createDocumentFragment();
   features.forEach(function (feature) {
-    var element = document.createElement(Feature.TAG);
-    element.classList.add(Feature.FIRST_CLASS);
-    element.classList.add(Feature.SECOND_CLASS + feature);
+    var element = document.createElement('li');
+    element.classList.add(FeatureClass.FIRST);
+    element.classList.add(FeatureClass.SECOND + feature);
     fragment.appendChild(element);
   });
 
@@ -37,7 +35,7 @@ function renderFeatures(features) {
 function renderPhotos(sources) {
   var fragment = document.createDocumentFragment();
   sources.forEach(function (source) {
-    var photo = document.createElement(Photo.TAG);
+    var photo = document.createElement('img');
     photo.classList.add(Photo.CLASS);
     photo.src = source;
     photo.width = Photo.WIDTH;

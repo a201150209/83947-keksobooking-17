@@ -31,8 +31,8 @@
     url: 'https://js.dump.academy/keksobooking',
     data: {},
     responseType: 'json',
-    onSuccess: window.page.renderSuccess,
-    onError: window.page.renderError
+    onSuccess: window.page.showSuccess,
+    onError: window.page.showError
   };
 
   function matchRoomsAndCapacities() {
@@ -91,7 +91,9 @@
     }
   }
 
-  function onAdFormReset() {
+  function onAdFormReset(evt) {
+    evt.preventDefault();
+    adForm.reset();
     window.page.deactivate();
   }
 

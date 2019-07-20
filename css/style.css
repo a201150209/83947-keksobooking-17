@@ -178,6 +178,14 @@ fieldset {
   background: none;
 }
 
+.map__pin--visible {
+  display: block;
+}
+
+.map__pin--invisible {
+  display: none;
+}
+
 .map__pin:focus {
   outline: none;
   -webkit-filter: drop-shadow(0 0 5px red);
@@ -1189,6 +1197,10 @@ fieldset {
   vertical-align: middle;
 
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+.popup--disabled {
+  display: none;
 }
 
 .success__message,

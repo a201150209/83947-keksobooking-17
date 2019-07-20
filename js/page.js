@@ -3,11 +3,16 @@
 (function () {
   var DisabledClass = {
     MAP: 'map--faded',
-    AD_FORM: 'ad-form--disabled'
+    AD_FORM: 'ad-form--disabled',
+    SUCCESS: 'success--disabled',
+    ERROR: 'error--disabled',
+    POPUP: 'popup--disabled'
   };
   var adForm = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var main = document.querySelector('main');
+  var successPopup;
+  var errorPopup;
 
   var KeyCode = {
     ESC: 27
@@ -23,57 +28,65 @@
   }
 
   function deactivate() {
-    // Для себя: сделать фукцию ресет для каждого блока, уточнить насчет сброса offer
     map.classList.add(DisabledClass.MAP);
     adForm.classList.add(DisabledClass.AD_FORM);
     window.adForm.toggleFieldsets(window.adForm.fieldsetStatus.DEACTIVATE);
     window.filterForm.toggleFilters(window.filterForm.filterStatus.DEACTIVATE);
     window.pins.remove();
-    window.pins.cache.length = 0;
     window.cards.removeActive();
-    window.mainPin.isDragged = false;
     window.mainPin.resetPosition();
-    window.adForm.setAddressFieldValue(window.mainPin.setting.START);
   }
 
   function renderSuccessPopup() {
-    var successTemplate = document.querySelector('#success').content;
-    var success = successTemplate.cloneNode(true);
-    main.appendChild(success);
+    var template = document.querySelector('#success').content;
+    var popup = template.cloneNode(true);
+    main.appendChild(popup);
+    successPopup = main.querySelector('div.success');
+    successPopup.classList.add(DisabledClass.POPUP);
+  }
+
+  function showSuccessPopup() {
+    successPopup.classList.remove(DisabledClass.POPUP);
     document.addEventListener('click', onDocumentClick);
     document.addEventListener('keyup', onDocumentKeyup);
     adForm.reset();
     deactivate();
   }
 
-  function renderErrorPopup(errorText) {
+  function renderErrorPopup() {
     var template = document.querySelector('#error').content;
     var popup = template.cloneNode(true);
-    var message = popup.querySelector('.error__message');
-    message.textContent = errorText;
     var closeButton = popup.querySelector('.error__button');
     closeButton.addEventListener('click', function (evt) {
       evt.preventDefault();
-      removeActivePopup();
+      hideActivePopup();
     });
-    document.addEventListener('click', onDocumentClick);
-    document.addEventListener('keyup', onDocumentKeyup);
     main.appendChild(popup);
+    errorPopup = main.querySelector('div.error');
+    errorPopup.classList.add(DisabledClass.POPUP);
   }
 
-  function removeActivePopup() {
-    var success = main.querySelector('div.success');
-    var error = main.querySelector('div.error');
+  function showErrorPopup(errorText) {
+    errorPopup.classList.remove(DisabledClass.POPUP);
+    var message = errorPopup.querySelector('.error__message');
+    message.textContent = errorText;
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keyup', onDocumentKeyup);
+  }
+
+  function hideActivePopup() {
+    var isSuccess = !successPopup.classList.contains(DisabledClass.POPUP);
+    var isError = !errorPopup.classList.contains(DisabledClass.POPUP);
     var active = false;
 
-    if (success) {
-      active = success;
-    } else if (error) {
-      active = error;
+    if (isSuccess) {
+      active = successPopup;
+    } else if (isError) {
+      active = errorPopup;
     }
 
     if (active) {
-      active.remove();
+      active.classList.add(DisabledClass.POPUP);
       document.removeEventListener('click', onDocumentClick);
       document.removeEventListener('keyup', onDocumentKeyup);
     }
@@ -81,21 +94,24 @@
 
   function onDocumentClick(evt) {
     evt.preventDefault();
-    removeActivePopup();
+    hideActivePopup();
   }
 
   function onDocumentKeyup(evt) {
     evt.preventDefault();
     if (evt.keyCode === KeyCode.ESC) {
-      removeActivePopup();
+      hideActivePopup();
     }
   }
+
+  renderSuccessPopup();
+  renderErrorPopup();
 
   window.page = {
     KeyCode: KeyCode,
     activate: activate,
     deactivate: deactivate,
-    renderSuccess: renderSuccessPopup,
-    renderError: renderErrorPopup
+    showSuccess: showSuccessPopup,
+    showError: showErrorPopup
   };
 })();
