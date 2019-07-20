@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var FilterStatus = {
+    ACTIVATE: 'activate',
+    DEACTIVATE: 'deactivate'
+  };
   var RESET_FILTER_VALUE = 'any';
   var lastTimeout;
   var filtersWrapper = document.querySelector('.map__filters-container');
@@ -82,7 +86,7 @@
     evt.preventDefault();
     var currentFilter = evt.target;
     var isResetFilter = currentFilter.value === RESET_FILTER_VALUE || currentFilter.checked === false;
-    filteredPinsCache = window.pins.cache.slice();
+    filteredPinsCache = window.pins.adsCache.slice();
 
     for (var i = 0; i < filters.length; i++) {
       var isCurrentFilter = currentFilter === filters[i].element;
@@ -108,10 +112,10 @@
 
   function toggleFilters(status) {
     switch (status) {
-      case 'activate':
+      case FilterStatus.ACTIVATE:
         window.utils.toggleStatusOfElements(filterElements, false);
         break;
-      case 'deactivate':
+      case FilterStatus.DEACTIVATE:
         window.utils.toggleStatusOfElements(filterElements, true);
         break;
     }
@@ -128,10 +132,11 @@
     });
   };
 
-  toggleFilters('deactivate');
+  toggleFilters(FilterStatus.DEACTIVATE);
   filtersWrapper.addEventListener('change', onfilterWrapperChange, true);
 
   window.filterForm = {
+    filterStatus: FilterStatus,
     toggleFilters: toggleFilters
   };
 })();

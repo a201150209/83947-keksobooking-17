@@ -1,13 +1,15 @@
 'use strict';
 
 (function () {
-  var Pins = {
+  var Pin = {
     MAX_INDEX: 4,
-    AVATAR_SELECTOR: 'img'
+    AVATAR_SELECTOR: 'img',
+    ACTIVE_CLASS: 'map__pin--active'
   };
   var map = document.querySelector('.map');
   var pinsWrapper = map.querySelector('.map__pins');
   var pinsTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  var filtersWrapper = map.querySelector('.map__filters-container');
   var xhrData = {
     type: 'GET',
     url: 'https://js.dump.academy/keksobooking/data',
@@ -19,7 +21,7 @@
 
   function renderPin(entity) {
     var pin = pinsTemplate.cloneNode(true);
-    var avatar = pin.querySelector(Pins.AVATAR_SELECTOR);
+    var avatar = pin.querySelector(Pin.AVATAR_SELECTOR);
     var avatarWidth = avatar.width;
     var avatarHeight = avatar.height;
 
@@ -31,26 +33,41 @@
     return pin;
   }
 
+  function toggleActivePin(pin) {
+    var activePin = map.querySelector('.' + Pin.ACTIVE_CLASS);
+    if (activePin) {
+      activePin.classList.remove(Pin.ACTIVE_CLASS);
+    }
+    pin.classList.add(Pin.ACTIVE_CLASS);
+  }
+
+  function toggleActiveCard(cardData) {
+    window.cards.removeActive();
+    filtersWrapper.insertAdjacentElement('beforebegin', window.cards.render(cardData));
+    document.addEventListener('keyup', window.cards.onDocumentKeyup);
+  }
+
   function addPinClickListener(pin, cardData) {
-    var filtersWrapper = map.querySelector('.map__filters-container');
     pin.addEventListener('click', function (evt) {
       evt.preventDefault();
-      window.cards.removeActive();
-      filtersWrapper.insertAdjacentElement('beforebegin', window.cards.render(cardData));
-      document.addEventListener('keyup', window.cards.onDocumentKeyup);
+      var isPinActive = pin.classList.contains(Pin.ACTIVE_CLASS);
+      if (!isPinActive) {
+        toggleActivePin(pin);
+        toggleActiveCard(cardData);
+      }
     });
   }
 
-  function renderPins(data) {
+  function renderPins(ads) {
     var fragment = document.createDocumentFragment();
-    var isDataFromServer = window.pins.cache.length === 0;
+    var isDataFromServer = window.pins.adsCache.length === 0;
 
     if (isDataFromServer) {
-      window.pins.cache = data;
-      window.filterForm.toggleFilters('activate');
+      window.pins.cache = ads;
+      window.filterForm.toggleFilters(window.filterForm.filterStatus.ACTIVATE);
     }
 
-    data.slice(0, Pins.MAX_INDEX).forEach(function (entity) {
+    ads.forEach(function (entity) {
       var pin = renderPin(entity);
       addPinClickListener(pin, entity);
       fragment.appendChild(pin);
@@ -67,9 +84,13 @@
     }
   }
 
+  function showPins(pins) {
+    pins.slice(0, Pin.MAX_INDEX);
+  }
+
   window.pins = {
     requestData: xhrData,
-    cache: [],
+    adsCache: [],
     render: renderPins,
     remove: removePins
   };

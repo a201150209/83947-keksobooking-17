@@ -107,6 +107,7 @@
   mainPin.addEventListener('mousedown', onMainPinMouseDown);
 
   window.mainPin = {
+    setting: MainPin,
     isDragged: false,
     getCoordinates: getCoordinates,
     resetPosition: resetPosition

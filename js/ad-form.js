@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var FieldsetStatus = {
+    ACTIVATE: 'activate',
+    DEACTIVATE: 'deactivate'
+  };
   var adForm = document.querySelector('.ad-form');
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var addressField = adForm.querySelector('#address');
@@ -53,12 +57,12 @@
 
   function onRoomNumberFieldChange(evt) {
     evt.preventDefault();
-    matchRoomsAndCapacities();
+    checkCustomValidation();
   }
 
   function onCapacityFieldChange(evt) {
     evt.preventDefault();
-    matchRoomsAndCapacities();
+    checkCustomValidation();
   }
 
   function onTimeInFieldChange(evt) {
@@ -71,16 +75,9 @@
     timeInField.value = evt.target.value;
   }
 
-  /*
-  Раскоментируй этот код
-  document.querySelector('.ad-form__submit').addEventListener('click', function () {
-    checkCustomValidation();
-  }); */
-
   function checkCustomValidation() {
-    console.log(matchRoomsAndCapacities());
     if (!matchRoomsAndCapacities()) {
-      roomNumberField.setCustomValidity('Нет соответствия');
+      roomNumberField.setCustomValidity('В текущее количество комнат может заехать гостей: ' + roomsToCapacities[roomNumberField.value]);
     } else {
       roomNumberField.setCustomValidity('');
     }
@@ -88,12 +85,10 @@
 
   function onAdFormSubmit(evt) {
     evt.preventDefault();
-    xhrData.data = new FormData(document.forms.adForm);
-    // Задокументируй этот код
-    if (checkCustomValidation()) {
+    if (adForm.checkValidity()) {
+      xhrData.data = new FormData(document.forms.adForm);
       window.xhr.create(xhrData);
     }
-    // Раскоментируй этот код window.xhr.create(xhrData);
   }
 
   function onAdFormReset() {
@@ -107,10 +102,10 @@
 
   function toggleFieldsets(status) {
     switch (status) {
-      case 'activate':
+      case FieldsetStatus.ACTIVATE:
         window.utils.toggleStatusOfElements(adFormFieldsets, false);
         break;
-      case 'deactivate':
+      case FieldsetStatus.DEACTIVATE:
         window.utils.toggleStatusOfElements(adFormFieldsets, true);
         break;
     }
@@ -127,11 +122,13 @@
   }
 
 
+  checkCustomValidation();
   setMinPrice(typeField.value);
   setAddressFieldValue('round');
-  toggleFieldsets('deactivate');
+  toggleFieldsets(FieldsetStatus.DEACTIVATE);
 
   window.adForm = {
+    fieldsetStatus: FieldsetStatus,
     toggleFieldsets: toggleFieldsets,
     setAddressFieldValue: setAddressFieldValue,
     addFieldsListeners: addAdFormFieldsListeners
