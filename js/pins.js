@@ -59,7 +59,7 @@
 
     if (isDataFromServer) {
       window.pins.adsCache = ads;
-      window.filterForm.toggleFilters(window.filterForm.filterStatus.ACTIVE);
+      window.filterForm.toggleDisability(window.filterForm.status.ACTIVE);
     }
 
     ads.forEach(function (entity, number) {

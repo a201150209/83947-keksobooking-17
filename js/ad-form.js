@@ -95,13 +95,13 @@
     addressField.value = pinCoordinates.x + ', ' + pinCoordinates.y;
   }
 
-  function toggleFieldsets(status) {
+  function toggleFieldsetsDisability(status) {
     switch (status) {
       case FieldsetStatus.ACTIVE:
-        window.utils.toggleStatusOfElements(formFieldsets, false);
+        window.utils.toggleElementsDisability(formFieldsets, false);
         break;
       case FieldsetStatus.INACTIVE:
-        window.utils.toggleStatusOfElements(formFieldsets, true);
+        window.utils.toggleElementsDisability(formFieldsets, true);
         break;
     }
   }
@@ -129,11 +129,11 @@
   checkCustomValidation();
   setMinPrice(typeField.value);
   setAddressFieldValue('round');
-  toggleFieldsets(FieldsetStatus.INACTIVE);
+  toggleFieldsetsDisability(FieldsetStatus.INACTIVE);
 
   window.adForm = {
-    fieldsetStatus: FieldsetStatus,
-    toggleFieldsets: toggleFieldsets,
+    status: FieldsetStatus,
+    toggleFieldsetsDisability: toggleFieldsetsDisability,
     setAddressFieldValue: setAddressFieldValue,
     addFieldsEventListeners: addFormFieldsEventListeners,
     removeFieldsEventListeners: removeFormFieldsEventListeners

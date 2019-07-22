@@ -12,7 +12,7 @@
   function activate() {
     map.classList.remove(DisabledClass.MAP);
     adForm.classList.remove(DisabledClass.AD_FORM);
-    window.adForm.toggleFieldsets(window.adForm.fieldsetStatus.ACTIVE);
+    window.adForm.toggleFieldsetsDisability(window.adForm.status.ACTIVE);
     window.adForm.addFieldsEventListeners();
     window.xhr.create(window.xhr.pinsConfig);
   }
@@ -20,9 +20,9 @@
   function deactivate() {
     map.classList.add(DisabledClass.MAP);
     adForm.classList.add(DisabledClass.AD_FORM);
-    window.adForm.toggleFieldsets(window.adForm.fieldsetStatus.INACTIVE);
+    window.adForm.toggleFieldsetsDisability(window.adForm.status.INACTIVE);
     window.adForm.removeFieldsEventListeners();
-    window.filterForm.toggleFilters(window.filterForm.filterStatus.INACTIVE);
+    window.filterForm.toggleDisability(window.filterForm.status.INACTIVE);
     window.pins.remove();
     window.cards.removeActive();
     window.mainPin.resetPosition();

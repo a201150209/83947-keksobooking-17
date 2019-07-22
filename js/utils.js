@@ -8,7 +8,7 @@
         children[0].remove();
       }
     },
-    toggleStatusOfElements: function (elements, status) {
+    toggleElementsDisability: function (elements, status) {
       elements = Array.from(elements);
       elements.forEach(function (element) {
         element.disabled = status;

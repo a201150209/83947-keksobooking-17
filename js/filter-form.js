@@ -2,7 +2,7 @@
 
 (function () {
   var RESET_FILTER_VALUE = 'any';
-  var TIMEOUT = 500;
+  var FILTER_TIMEOUT = 500;
   var PriceBorder = {
     BOTTOM: 10000,
     TOP: 50000
@@ -11,7 +11,6 @@
     ACTIVE: 'active',
     INACTIVE: 'inactive'
   };
-  var lastTimeout;
   var filtersWrapper = document.querySelector('.map__filters-container');
   var filteredAdsCache = [];
   var filters = [
@@ -61,6 +60,7 @@
   var filterElements = filters.map(function (element) {
     return element.element;
   });
+  var lastTimeout;
 
   function onfilterWrapperChange(evt) {
     if (lastTimeout) {
@@ -68,7 +68,7 @@
     }
     lastTimeout = window.setTimeout(function () {
       filterAds(evt);
-    }, TIMEOUT);
+    }, FILTER_TIMEOUT);
   }
 
   function matchPrice(rule, price) {
@@ -113,13 +113,13 @@
     window.pins.show(filteredAdsCache);
   }
 
-  function toggleFilters(status) {
+  function toggleFiltersDisability(status) {
     switch (status) {
       case FilterStatus.ACTIVE:
-        window.utils.toggleStatusOfElements(filterElements, false);
+        window.utils.toggleElementsDisability(filterElements, false);
         break;
       case FilterStatus.INACTIVE:
-        window.utils.toggleStatusOfElements(filterElements, true);
+        window.utils.toggleElementsDisability(filterElements, true);
         break;
     }
   }
@@ -135,11 +135,11 @@
     });
   };
 
-  toggleFilters(FilterStatus.INACTIVE);
+  toggleFiltersDisability(FilterStatus.INACTIVE);
   filtersWrapper.addEventListener('change', onfilterWrapperChange, true);
 
   window.filterForm = {
-    filterStatus: FilterStatus,
-    toggleFilters: toggleFilters
+    status: FilterStatus,
+    toggleDisability: toggleFiltersDisability
   };
 })();
