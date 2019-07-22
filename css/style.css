@@ -178,6 +178,14 @@ fieldset {
   background: none;
 }
 
+.map__pin--visible {
+  display: block;
+}
+
+.map__pin--invisible {
+  display: none;
+}
+
 .map__pin:focus {
   outline: none;
   -webkit-filter: drop-shadow(0 0 5px red);
@@ -639,6 +647,10 @@ fieldset {
 
 .ad-form__element--time select:first-of-type {
   margin-right: 14px;
+}
+
+.ad-form__error {
+  border: 2px solid #f00;
 }
 
 .features legend {
@@ -1185,6 +1197,10 @@ fieldset {
   vertical-align: middle;
 
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+.popup--disabled {
+  display: none;
 }
 
 .success__message,

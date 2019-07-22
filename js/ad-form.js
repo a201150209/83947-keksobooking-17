@@ -1,20 +1,25 @@
 'use strict';
 
 (function () {
-  var adForm = document.querySelector('.ad-form');
-  var adFormFieldsets = adForm.querySelectorAll('fieldset');
-  var addressField = adForm.querySelector('#address');
-  var priceField = adForm.querySelector('#price');
-  var roomNumberField = adForm.querySelector('#room_number');
-  var capacityField = adForm.querySelector('#capacity');
-  var typeField = adForm.querySelector('#type');
-  var timeInField = adForm.querySelector('#timein');
-  var timeOutField = adForm.querySelector('#timeout');
+  var FieldsetStatus = {
+    ACTIVE: 'active',
+    INACTIVE: 'inactive'
+  };
+  var form = document.querySelector('.ad-form');
+  var formFieldsets = form.querySelectorAll('fieldset');
+  var addressField = form.querySelector('#address');
+  var priceField = form.querySelector('#price');
+  var roomNumberField = form.querySelector('#room_number');
+  var capacityField = form.querySelector('#capacity');
+  var typeField = form.querySelector('#type');
+  var timeInField = form.querySelector('#timein');
+  var timeOutField = form.querySelector('#timeout');
+  var resetButton = form.querySelector('.ad-form__reset');
   var offerTypeToMinPrice = {
-    palace: 10000,
-    house: 5000,
-    flat: 1000,
-    bungalo: 0
+    'palace': 10000,
+    'house': 5000,
+    'flat': 1000,
+    'bungalo': 0
   };
   var roomsToCapacities = {
     '1': ['1'],
@@ -27,8 +32,8 @@
     url: 'https://js.dump.academy/keksobooking',
     data: {},
     responseType: 'json',
-    onSuccess: window.page.renderSuccess,
-    onError: window.page.renderError
+    onSuccess: window.page.showSuccess,
+    onError: window.page.showError
   };
 
   function matchRoomsAndCapacities() {
@@ -53,12 +58,12 @@
 
   function onRoomNumberFieldChange(evt) {
     evt.preventDefault();
-    matchRoomsAndCapacities();
+    checkCustomValidation();
   }
 
   function onCapacityFieldChange(evt) {
     evt.preventDefault();
-    matchRoomsAndCapacities();
+    checkCustomValidation();
   }
 
   function onTimeInFieldChange(evt) {
@@ -71,13 +76,24 @@
     timeInField.value = evt.target.value;
   }
 
-  function onAdFormSubmit(evt) {
-    evt.preventDefault();
-    xhrData.data = new FormData(document.forms.adForm);
-    window.xhr.create(xhrData);
+  function checkCustomValidation() {
+    if (!matchRoomsAndCapacities()) {
+      roomNumberField.setCustomValidity('В текущее количество комнат может заехать гостей: ' + roomsToCapacities[roomNumberField.value]);
+    } else {
+      roomNumberField.setCustomValidity('');
+    }
   }
 
-  function onAdFormReset() {
+  function onFormSubmit(evt) {
+    evt.preventDefault();
+    if (form.checkValidity()) {
+      xhrData.data = new FormData(document.forms.adForm);
+      window.xhr.create(xhrData);
+    }
+  }
+
+  function onResetButton() {
+    form.reset();
     window.page.deactivate();
   }
 
@@ -88,47 +104,35 @@
 
   function toggleFieldsets(status) {
     switch (status) {
-      case 'activate':
-        window.utils.toggleStatusOfElements(adFormFieldsets, false);
+      case FieldsetStatus.ACTIVE:
+        window.utils.toggleStatusOfElements(formFieldsets, false);
         break;
-      case 'deactivate':
-        window.utils.toggleStatusOfElements(adFormFieldsets, true);
+      case FieldsetStatus.INACTIVE:
+        window.utils.toggleStatusOfElements(formFieldsets, true);
         break;
     }
   }
 
-  /* function checkValidity(field) {
-    var validity = field.validity;
-    console.log(validity);
-  }
-
-  var adFormFields = adForm.querySelectorAll('input');
-  Array.from(adFormFields);
-  adFormFields.push(adForm.querySelector('textarea'));
-
-  for (var i = 0; i < adFormFields.length; i++) {
-    checkValidity(adFormFields[i]);
-  }*/
-
-  // Может быть нужно добавлять обработчики после активации страницы
-
-  function addAdFormFieldsListeners() {
+  function addFormFieldsListeners() {
     typeField.addEventListener('change', onTypeFieldChange);
     roomNumberField.addEventListener('change', onRoomNumberFieldChange);
     capacityField.addEventListener('change', onCapacityFieldChange);
     timeInField.addEventListener('change', onTimeInFieldChange);
     timeOutField.addEventListener('change', onTimeOutFieldChange);
-    adForm.addEventListener('submit', onAdFormSubmit);
-    adForm.addEventListener('reset', onAdFormReset);
+    form.addEventListener('submit', onFormSubmit);
+    resetButton.addEventListener('click', onResetButton);
   }
 
+
+  checkCustomValidation();
   setMinPrice(typeField.value);
   setAddressFieldValue('round');
-  toggleFieldsets('deactivate');
+  toggleFieldsets(FieldsetStatus.INACTIVE);
 
   window.adForm = {
+    fieldsetStatus: FieldsetStatus,
     toggleFieldsets: toggleFieldsets,
     setAddressFieldValue: setAddressFieldValue,
-    addFieldsListeners: addAdFormFieldsListeners
+    addFieldsListeners: addFormFieldsListeners
   };
 })();
