@@ -92,7 +92,7 @@
     }
   }
 
-  function onResetButton() {
+  function onClickResetButton() {
     form.reset();
     window.page.deactivate();
   }
@@ -120,7 +120,7 @@
     timeInField.addEventListener('change', onTimeInFieldChange);
     timeOutField.addEventListener('change', onTimeOutFieldChange);
     form.addEventListener('submit', onFormSubmit);
-    resetButton.addEventListener('click', onResetButton);
+    resetButton.addEventListener('click', onClickResetButton);
   }
 
 
