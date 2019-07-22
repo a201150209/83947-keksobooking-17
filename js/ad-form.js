@@ -2,18 +2,19 @@
 
 (function () {
   var FieldsetStatus = {
-    ACTIVATE: 'activate',
-    DEACTIVATE: 'deactivate'
+    ACTIVE: 'active',
+    INACTIVE: 'inactive'
   };
-  var adForm = document.querySelector('.ad-form');
-  var adFormFieldsets = adForm.querySelectorAll('fieldset');
-  var addressField = adForm.querySelector('#address');
-  var priceField = adForm.querySelector('#price');
-  var roomNumberField = adForm.querySelector('#room_number');
-  var capacityField = adForm.querySelector('#capacity');
-  var typeField = adForm.querySelector('#type');
-  var timeInField = adForm.querySelector('#timein');
-  var timeOutField = adForm.querySelector('#timeout');
+  var form = document.querySelector('.ad-form');
+  var formFieldsets = form.querySelectorAll('fieldset');
+  var addressField = form.querySelector('#address');
+  var priceField = form.querySelector('#price');
+  var roomNumberField = form.querySelector('#room_number');
+  var capacityField = form.querySelector('#capacity');
+  var typeField = form.querySelector('#type');
+  var timeInField = form.querySelector('#timein');
+  var timeOutField = form.querySelector('#timeout');
+  var resetButton = form.querySelector('.ad-form__reset');
   var offerTypeToMinPrice = {
     'palace': 10000,
     'house': 5000,
@@ -83,17 +84,16 @@
     }
   }
 
-  function onAdFormSubmit(evt) {
+  function onFormSubmit(evt) {
     evt.preventDefault();
-    if (adForm.checkValidity()) {
+    if (form.checkValidity()) {
       xhrData.data = new FormData(document.forms.adForm);
       window.xhr.create(xhrData);
     }
   }
 
-  function onAdFormReset(evt) {
-    evt.preventDefault();
-    adForm.reset();
+  function onResetButton() {
+    form.reset();
     window.page.deactivate();
   }
 
@@ -104,35 +104,35 @@
 
   function toggleFieldsets(status) {
     switch (status) {
-      case FieldsetStatus.ACTIVATE:
-        window.utils.toggleStatusOfElements(adFormFieldsets, false);
+      case FieldsetStatus.ACTIVE:
+        window.utils.toggleStatusOfElements(formFieldsets, false);
         break;
-      case FieldsetStatus.DEACTIVATE:
-        window.utils.toggleStatusOfElements(adFormFieldsets, true);
+      case FieldsetStatus.INACTIVE:
+        window.utils.toggleStatusOfElements(formFieldsets, true);
         break;
     }
   }
 
-  function addAdFormFieldsListeners() {
+  function addFormFieldsListeners() {
     typeField.addEventListener('change', onTypeFieldChange);
     roomNumberField.addEventListener('change', onRoomNumberFieldChange);
     capacityField.addEventListener('change', onCapacityFieldChange);
     timeInField.addEventListener('change', onTimeInFieldChange);
     timeOutField.addEventListener('change', onTimeOutFieldChange);
-    adForm.addEventListener('submit', onAdFormSubmit);
-    adForm.addEventListener('reset', onAdFormReset);
+    form.addEventListener('submit', onFormSubmit);
+    resetButton.addEventListener('click', onResetButton);
   }
 
 
   checkCustomValidation();
   setMinPrice(typeField.value);
   setAddressFieldValue('round');
-  toggleFieldsets(FieldsetStatus.DEACTIVATE);
+  toggleFieldsets(FieldsetStatus.INACTIVE);
 
   window.adForm = {
     fieldsetStatus: FieldsetStatus,
     toggleFieldsets: toggleFieldsets,
     setAddressFieldValue: setAddressFieldValue,
-    addFieldsListeners: addAdFormFieldsListeners
+    addFieldsListeners: addFormFieldsListeners
   };
 })();

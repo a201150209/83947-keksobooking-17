@@ -2,8 +2,8 @@
 
 (function () {
   var FilterStatus = {
-    ACTIVATE: 'activate',
-    DEACTIVATE: 'deactivate'
+    ACTIVE: 'active',
+    INACTIVE: 'inactive'
   };
   var RESET_FILTER_VALUE = 'any';
   var lastTimeout;
@@ -112,10 +112,10 @@
 
   function toggleFilters(status) {
     switch (status) {
-      case FilterStatus.ACTIVATE:
+      case FilterStatus.ACTIVE:
         window.utils.toggleStatusOfElements(filterElements, false);
         break;
-      case FilterStatus.DEACTIVATE:
+      case FilterStatus.INACTIVE:
         window.utils.toggleStatusOfElements(filterElements, true);
         break;
     }
@@ -132,7 +132,7 @@
     });
   };
 
-  toggleFilters(FilterStatus.DEACTIVATE);
+  toggleFilters(FilterStatus.INACTIVE);
   filtersWrapper.addEventListener('change', onfilterWrapperChange, true);
 
   window.filterForm = {
