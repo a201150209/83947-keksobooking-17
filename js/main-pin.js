@@ -1,69 +1,31 @@
 'use strict';
 
 (function () {
+  var MIN_HEIGHT = 130;
+  var MAX_HEIGHT = 630;
   var MainPin = {
     START: 'round',
     AFTER_ACTIVATE: 'marker',
     STEM_HEIGHT: 19
   };
-  var map = document.querySelector('.map');
-  var mainPin = map.querySelector('.map__pin--main');
-  var isDragged = false;
+  var mainPin = window.page.map.querySelector('.map__pin--main');
   var mainPinWidth = mainPin.querySelector('img').offsetWidth;
   var mainPinHeight = mainPin.querySelector('img').offsetHeight;
   var mainPinCoordinates = {
     start: getCoordinates(MainPin.START),
     current: {
-      x: undefined,
-      y: undefined
+      x: 0,
+      y: 0
     },
     min: {
-      y: 130
+      y: MIN_HEIGHT
     },
     max: {
-      y: 630
+      y: MAX_HEIGHT
     }
   };
-  var mapLeftMargin = getMapLeftMargin();
+  var isDragged = false;
 
-  function getMapLeftMargin() {
-    var documentWidth = document.documentElement.clientWidth;
-    var mapWidth = map.clientWidth;
-    return (documentWidth - mapWidth) / 2;
-  }
-
-  function getCoordinates(pinType) {
-    var positionLeft = parseInt(mainPin.style.left, 10);
-    var positionTop = parseInt(mainPin.style.top, 10);
-    var currentCoordinates = {
-      x: (Math.floor(positionLeft + mainPinWidth / 2)).toString()
-    };
-
-    switch (pinType) {
-      case MainPin.START:
-        currentCoordinates.y = (Math.floor(positionTop + mainPinHeight / 2)).toString();
-        break;
-      case MainPin.AFTER_ACTIVATE:
-        currentCoordinates.y = (Math.floor(positionTop + mainPinHeight + MainPin.STEM_HEIGHT)).toString();
-        break;
-    }
-
-    return currentCoordinates;
-  }
-
-  function setPosition(currentCoordinates) {
-    var pageTopOffset = window.pageYOffset;
-    // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
-    mainPin.style.left = (currentCoordinates.x - mapLeftMargin - mainPinHeight / 2).toString() + 'px';
-    mainPin.style.top = (currentCoordinates.y + pageTopOffset - mainPinHeight - MainPin.STEM_HEIGHT).toString() + 'px';
-  }
-
-  function resetPosition() {
-    mainPin.style.left = (mainPinCoordinates.start.x - mainPinWidth / 2).toString() + 'px';
-    mainPin.style.top = (mainPinCoordinates.start.y - mainPinHeight / 2).toString() + 'px';
-    isDragged = false;
-    window.adForm.setAddressFieldValue(MainPin.START);
-  }
 
   function onMainPinMouseDown(evt) {
     evt.preventDefault();
@@ -75,7 +37,7 @@
       isDragged = true;
     }
 
-    map.addEventListener('mousemove', onMapMouseMove);
+    window.page.map.addEventListener('mousemove', onMapMouseMove);
     document.addEventListener('mouseup', onDocumentMouseUp);
   }
 
@@ -101,10 +63,44 @@
 
   function onDocumentMouseUp(evt) {
     evt.preventDefault();
-    map.removeEventListener('mousemove', onMapMouseMove);
+    window.page.map.removeEventListener('mousemove', onMapMouseMove);
     document.removeEventListener('mouseup', onDocumentMouseUp);
     mainPin.addEventListener('mousedown', onMainPinMouseDown);
     window.adForm.setAddressFieldValue(MainPin.AFTER_ACTIVATE);
+  }
+
+  function getCoordinates(pinType) {
+    var positionLeft = parseInt(mainPin.style.left, 10);
+    var positionTop = parseInt(mainPin.style.top, 10);
+    var currentCoordinates = {
+      x: (Math.floor(positionLeft + mainPinWidth / 2)).toString()
+    };
+
+    switch (pinType) {
+      case MainPin.START:
+        currentCoordinates.y = (Math.floor(positionTop + mainPinHeight / 2)).toString();
+        break;
+      case MainPin.AFTER_ACTIVATE:
+        currentCoordinates.y = (Math.floor(positionTop + mainPinHeight + MainPin.STEM_HEIGHT)).toString();
+        break;
+    }
+
+    return currentCoordinates;
+  }
+
+  function setPosition(currentCoordinates) {
+    var pageTopOffset = window.pageYOffset;
+    var mapLeftMargin = (document.documentElement.clientWidth - window.page.map.clientWidth) / 2;
+    // Устанавливаю центр пина по горизонтали и нижнюю точку пина по вертикали для привязки к курсору
+    mainPin.style.left = (currentCoordinates.x - mapLeftMargin - mainPinHeight / 2).toString() + 'px';
+    mainPin.style.top = (currentCoordinates.y + pageTopOffset - mainPinHeight - MainPin.STEM_HEIGHT).toString() + 'px';
+  }
+
+  function resetPosition() {
+    mainPin.style.left = (mainPinCoordinates.start.x - mainPinWidth / 2).toString() + 'px';
+    mainPin.style.top = (mainPinCoordinates.start.y - mainPinHeight / 2).toString() + 'px';
+    isDragged = false;
+    window.adForm.setAddressFieldValue(MainPin.START);
   }
 
   mainPin.addEventListener('mousedown', onMainPinMouseDown);

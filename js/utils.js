@@ -2,12 +2,6 @@
 
 (function () {
   window.utils = {
-    getRandomElementInArray: function (array) {
-      return array[window.utils.getRandomNumberFromRange(0, array.length - 1)];
-    },
-    getRandomNumberFromRange: function (min, max) {
-      return Math.round(min - 0.5 + Math.random() * (max - min + 1));
-    },
     removeChilds: function (parent) {
       var children = parent.children;
       while (children.length > 0) {
@@ -19,6 +13,10 @@
       elements.forEach(function (element) {
         element.disabled = status;
       });
+    },
+    isEscKeycode: function (evt) {
+      var ESC_KEYCODE = 27;
+      return evt.keyCode === ESC_KEYCODE;
     }
   };
 })();

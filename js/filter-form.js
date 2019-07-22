@@ -1,11 +1,16 @@
 'use strict';
 
 (function () {
+  var RESET_FILTER_VALUE = 'any';
+  var TIMEOUT = 500;
+  var PriceBorder = {
+    BOTTOM: 10000,
+    TOP: 50000
+  };
   var FilterStatus = {
     ACTIVE: 'active',
     INACTIVE: 'inactive'
   };
-  var RESET_FILTER_VALUE = 'any';
   var lastTimeout;
   var filtersWrapper = document.querySelector('.map__filters-container');
   var filteredAdsCache = [];
@@ -23,19 +28,9 @@
       element: filtersWrapper.querySelector('#housing-price'),
       active: false,
       filterAds: function (rule) {
-        if (rule === 'low') {
-          filteredAdsCache = filteredAdsCache.filter(function (ad) {
-            return ad.offer.price < 10000;
-          });
-        } else if (rule === 'middle') {
-          filteredAdsCache = filteredAdsCache.filter(function (ad) {
-            return ad.offer.price >= 10000 && ad.offer.price <= 50000;
-          });
-        } else if (rule === 'high') {
-          filteredAdsCache = filteredAdsCache.filter(function (ad) {
-            return ad.offer.price > 50000;
-          });
-        }
+        filteredAdsCache = filteredAdsCache.filter(function (ad) {
+          return matchPrice(rule, ad.offer.price);
+        });
       }
     },
     {
@@ -67,19 +62,27 @@
     return element.element;
   });
 
-  function FeatureFilter(element) {
-    this.element = element;
-    this.active = false;
-  }
-
   function onfilterWrapperChange(evt) {
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
     }
     lastTimeout = window.setTimeout(function () {
       filterAds(evt);
-    }, 500);
+    }, TIMEOUT);
+  }
 
+  function matchPrice(rule, price) {
+    var ruleToPrice = {
+      'low': price < PriceBorder.BOTTOM,
+      'middle': price >= PriceBorder.BOTTOM && price <= PriceBorder.TOP,
+      'high': price > PriceBorder.TOP
+    };
+    return ruleToPrice[rule];
+  }
+
+  function FeatureFilter(element) {
+    this.element = element;
+    this.active = false;
   }
 
   function filterAds(evt) {

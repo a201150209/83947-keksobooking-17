@@ -8,19 +8,10 @@
     INVISIBLE: 'map__pin--invisible'
   };
 
-  var map = document.querySelector('.map');
   var pins;
-  var pinsWrapper = map.querySelector('.map__pins');
+  var pinsWrapper = window.page.map.querySelector('.map__pins');
   var pinsTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  var filtersWrapper = map.querySelector('.map__filters-container');
-  var xhrData = {
-    type: 'GET',
-    url: 'https://js.dump.academy/keksobooking/data',
-    data: {},
-    responseType: 'json',
-    onSuccess: renderPins,
-    onError: window.page.showError
-  };
+  var filtersWrapper = window.page.map.querySelector('.map__filters-container');
 
   function renderPin(entity) {
     var pin = pinsTemplate.cloneNode(true);
@@ -38,7 +29,7 @@
   }
 
   function toggleActivePin(pin) {
-    var activePin = map.querySelector('.' + PinsClass.ACTIVE);
+    var activePin = window.page.map.querySelector('.' + PinsClass.ACTIVE);
     if (activePin) {
       activePin.classList.remove(PinsClass.ACTIVE);
     }
@@ -80,7 +71,7 @@
     });
 
     pinsWrapper.appendChild(fragment);
-    pins = Array.from(map.querySelectorAll('.map__pin'));
+    pins = Array.from(window.page.map.querySelectorAll('.map__pin'));
     showPins(ads);
   }
 
@@ -95,7 +86,8 @@
   function showPins(ads) {
     ads.slice(0, PINS_MAX_INDEX).forEach(function (ad) {
       for (var i = 0; i < pins.length; i++) {
-        if (Number(pins[i].dataset.id) === ad.id) {
+        var isAdAndPinMatched = Number(pins[i].dataset.id) === ad.id;
+        if (isAdAndPinMatched) {
           pins[i].classList.add(PinsClass.VISIBLE);
           pins[i].classList.remove(PinsClass.INVISIBLE);
           break;
@@ -105,7 +97,7 @@
   }
 
   function hidePins() {
-    var activePins = Array.from(map.querySelectorAll('.' + PinsClass.VISIBLE));
+    var activePins = Array.from(window.page.map.querySelectorAll('.' + PinsClass.VISIBLE));
     activePins.forEach(function (pin) {
       pin.classList.remove(PinsClass.VISIBLE);
       pin.classList.add(PinsClass.INVISIBLE);
@@ -113,7 +105,6 @@
   }
 
   window.pins = {
-    requestData: xhrData,
     adsCache: [],
     render: renderPins,
     remove: removePins,

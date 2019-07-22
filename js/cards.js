@@ -16,9 +16,14 @@ var enToRuOfferType = {
   'house': 'Дом',
   'palace': 'Дворец'
 };
-var map = document.querySelector('.map');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
+function onDocumentKeyup(evt) {
+  evt.preventDefault();
+  if (window.utils.isEscKeycode(evt)) {
+    removeActiveCard();
+  }
+}
 
 function renderFeatures(features) {
   var fragment = document.createDocumentFragment();
@@ -83,17 +88,10 @@ function renderCard(entity) {
 }
 
 function removeActiveCard() {
-  var activeCard = map.querySelector('.popup');
+  var activeCard = window.page.map.querySelector('.popup');
   if (activeCard) {
     activeCard.remove();
     document.removeEventListener('keyup', onDocumentKeyup);
-  }
-}
-
-function onDocumentKeyup(evt) {
-  evt.preventDefault();
-  if (evt.keyCode === window.page.KeyCode.ESC) {
-    removeActiveCard();
   }
 }
 
