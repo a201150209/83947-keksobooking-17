@@ -108,7 +108,7 @@
     });
   }
 
-  function onClickResetButton() {
+  function onResetButtonClick() {
     removeErrors();
     enableDisabledFields();
     window.page.adForm.reset();
@@ -218,7 +218,7 @@
     timeOutField.addEventListener('change', onTimeOutFieldChange);
     avatarUploadField.addEventListener('change', onAvatarUploadFieldChange);
     photosUploadField.addEventListener('change', onPhotosUploadFieldChange);
-    resetButton.addEventListener('click', onClickResetButton);
+    resetButton.addEventListener('click', onResetButtonClick);
     submitButton.addEventListener('click', onSubmitButtonClick);
     window.page.adForm.addEventListener('submit', onFormSubmit);
   }
@@ -231,7 +231,7 @@
     timeOutField.removeEventListener('change', onTimeOutFieldChange);
     avatarUploadField.removeEventListener('change', onAvatarUploadFieldChange);
     photosUploadField.removeEventListener('change', onPhotosUploadFieldChange);
-    resetButton.removeEventListener('click', onClickResetButton);
+    resetButton.removeEventListener('click', onResetButtonClick);
     submitButton.removeEventListener('click', onSubmitButtonClick);
     window.page.adForm.removeEventListener('submit', onFormSubmit);
   }
