@@ -84,15 +84,11 @@
   }
 
   function onItemInput(evt) {
-    var field = evt.target;
-    if (evt.target === roomNumberField || evt.target === capacityField) {
-      field = roomNumberField;
-      checkCustomValidation();
-    }
+    validateField(evt);
+  }
 
-    var errorMessage = getErrorMessage(field);
-    errorMessage.textContent = field.validationMessage;
-    checkFieldValidity(field, errorMessage);
+  function onItemChange(evt) {
+    validateField(evt);
   }
 
   function onSubmitButtonClick() {
@@ -100,7 +96,9 @@
       if (!item.validity.valid) {
 
         if (item === roomNumberField) {
+          item.addEventListener('change', onItemChange);
           capacityField.addEventListener('input', onItemInput);
+          capacityField.addEventListener('change', onItemChange);
         }
 
         item.classList.add(ClassError.FIELD);
@@ -125,6 +123,18 @@
       item.classList.remove(ClassError.FIELD);
       errorMessages[i].remove();
     });
+  }
+
+  function validateField(evt) {
+    checkCustomValidation();
+    var field = evt.target;
+    if (evt.target === roomNumberField || evt.target === capacityField) {
+      field = roomNumberField;
+    }
+
+    var errorMessage = getErrorMessage(field);
+    errorMessage.textContent = field.validationMessage;
+    checkFieldValidity(field, errorMessage);
   }
 
   function checkFieldValidity(field, errorMessage) {
