@@ -71,6 +71,7 @@
   function onFormSubmit(evt) {
     evt.preventDefault();
     if (window.page.adForm.checkValidity()) {
+      enableDisabledFields();
       window.xhr.adFormConfig.data = new FormData(document.forms.adForm);
       window.xhr.create(window.xhr.adFormConfig);
       window.page.adForm.reset();
@@ -79,6 +80,7 @@
   }
 
   function onClickResetButton() {
+    enableDisabledFields();
     window.page.adForm.reset();
     window.page.deactivate();
   }
@@ -120,6 +122,11 @@
         window.utils.toggleElementsDisability(formFieldsets, true);
         break;
     }
+  }
+
+  function enableDisabledFields() {
+    var fields = window.page.adForm.querySelectorAll('input:disabled');
+    window.utils.toggleElementsDisability(fields, false);
   }
 
   function addFormFieldsEventListeners() {

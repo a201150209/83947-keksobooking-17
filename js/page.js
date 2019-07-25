@@ -26,6 +26,8 @@
     window.pins.remove();
     window.cards.removeActive();
     window.mainPin.resetPosition();
+    window.uploadingImages.index = {};
+    window.uploadingImages.removePreview();
   }
 
 

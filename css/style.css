@@ -820,12 +820,19 @@ fieldset {
 .ad-form__photo {
   margin-right: 10px;
   margin-bottom: 10px;
-
-  width: 70px;
+  min-width: 70px;
+  width: auto;
   height: 70px;
 
   background-color: #e4e4de;
   border-radius: 5px;
+}
+
+.ad-form__photo .preview-image {
+  display: inline-block;
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-top: 13px;
 }
 
 .ad-form__element--submit {
