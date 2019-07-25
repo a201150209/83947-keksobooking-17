@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var MaxIndexImages = {
+    AVATAR: 0,
+    PHOTOS: 2
+  };
   var FieldsetStatus = {
     ACTIVE: 'active',
     INACTIVE: 'inactive'
@@ -13,6 +17,10 @@
   var typeField = window.page.adForm.querySelector('#type');
   var timeInField = window.page.adForm.querySelector('#timein');
   var timeOutField = window.page.adForm.querySelector('#timeout');
+  var avatarUploadField = window.page.adForm.querySelector('#avatar');
+  var avatarPreviewWrapper = window.page.adForm.querySelector('.ad-form-header__preview');
+  var photosUploadField = window.page.adForm.querySelector('#images');
+  var photosPreviewWrapper = window.page.adForm.querySelector('.ad-form__photo');
   var resetButton = window.page.adForm.querySelector('.ad-form__reset');
   var offerTypeToMinPrice = {
     'palace': 10000,
@@ -50,6 +58,14 @@
   function onTimeOutFieldChange(evt) {
     evt.preventDefault();
     timeInField.value = evt.target.value;
+  }
+
+  function onAvatarUploadFieldChange(evt) {
+    window.uploadingImages.upload(evt.target, avatarPreviewWrapper, MaxIndexImages.AVATAR);
+  }
+
+  function onPhotosUploadFieldChange(evt) {
+    window.uploadingImages.upload(evt.target, photosPreviewWrapper, MaxIndexImages.PHOTOS);
   }
 
   function onFormSubmit(evt) {
@@ -112,6 +128,8 @@
     capacityField.addEventListener('change', onCapacityFieldChange);
     timeInField.addEventListener('change', onTimeInFieldChange);
     timeOutField.addEventListener('change', onTimeOutFieldChange);
+    avatarUploadField.addEventListener('change', onAvatarUploadFieldChange);
+    photosUploadField.addEventListener('change', onPhotosUploadFieldChange);
     resetButton.addEventListener('click', onClickResetButton);
     window.page.adForm.addEventListener('submit', onFormSubmit);
   }
@@ -122,6 +140,8 @@
     capacityField.removeEventListener('change', onCapacityFieldChange);
     timeInField.removeEventListener('change', onTimeInFieldChange);
     timeOutField.removeEventListener('change', onTimeOutFieldChange);
+    avatarUploadField.removeEventListener('change', onAvatarUploadFieldChange);
+    photosUploadField.removeEventListener('change', onPhotosUploadFieldChange);
     resetButton.removeEventListener('click', onClickResetButton);
     window.page.adForm.removeEventListener('submit', onFormSubmit);
   }

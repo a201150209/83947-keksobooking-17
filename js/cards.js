@@ -27,10 +27,10 @@ function onDocumentKeyup(evt) {
 
 function renderFeatures(features) {
   var fragment = document.createDocumentFragment();
-  features.forEach(function (feature) {
+  features.forEach(function (it) {
     var element = document.createElement('li');
     element.classList.add(FeatureClass.FIRST);
-    element.classList.add(FeatureClass.SECOND + feature);
+    element.classList.add(FeatureClass.SECOND + it);
     fragment.appendChild(element);
   });
 
@@ -39,10 +39,10 @@ function renderFeatures(features) {
 
 function renderPhotos(sources) {
   var fragment = document.createDocumentFragment();
-  sources.forEach(function (source) {
+  sources.forEach(function (it) {
     var photo = document.createElement('img');
     photo.classList.add(Photo.CLASS);
-    photo.src = source;
+    photo.src = it;
     photo.width = Photo.WIDTH;
     photo.height = Photo.HEIGHT;
     photo.alt = Photo.ALT;

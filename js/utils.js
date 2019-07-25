@@ -10,8 +10,8 @@
     },
     toggleElementsDisability: function (elements, status) {
       elements = Array.from(elements);
-      elements.forEach(function (element) {
-        element.disabled = status;
+      elements.forEach(function (item) {
+        item.disabled = status;
       });
     },
     isEscKeycode: function (evt) {

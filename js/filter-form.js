@@ -18,8 +18,8 @@
       element: filtersWrapper.querySelector('#housing-type'),
       active: false,
       filterAds: function (rule) {
-        filteredAdsCache = filteredAdsCache.filter(function (ad) {
-          return ad.offer.type === rule;
+        filteredAdsCache = filteredAdsCache.filter(function (item) {
+          return item.offer.type === rule;
         });
       }
     },
@@ -27,8 +27,8 @@
       element: filtersWrapper.querySelector('#housing-price'),
       active: false,
       filterAds: function (rule) {
-        filteredAdsCache = filteredAdsCache.filter(function (ad) {
-          return matchPrice(rule, ad.offer.price);
+        filteredAdsCache = filteredAdsCache.filter(function (item) {
+          return matchPrice(rule, item.offer.price);
         });
       }
     },
@@ -36,8 +36,8 @@
       element: filtersWrapper.querySelector('#housing-rooms'),
       active: false,
       filterAds: function (rule) {
-        filteredAdsCache = filteredAdsCache.filter(function (ad) {
-          return ad.offer.rooms === Number(rule);
+        filteredAdsCache = filteredAdsCache.filter(function (item) {
+          return item.offer.rooms === Number(rule);
         });
       }
     },
@@ -45,8 +45,8 @@
       element: filtersWrapper.querySelector('#housing-guests'),
       active: false,
       filterAds: function (rule) {
-        filteredAdsCache = filteredAdsCache.filter(function (ad) {
-          return ad.offer.guests === Number(rule);
+        filteredAdsCache = filteredAdsCache.filter(function (item) {
+          return item.offer.guests === Number(rule);
         });
       }
     },
@@ -57,8 +57,8 @@
     new FeatureFilter(filtersWrapper.querySelector('#filter-elevator')),
     new FeatureFilter(filtersWrapper.querySelector('#filter-conditioner'))
   ];
-  var filterElements = filters.map(function (element) {
-    return element.element;
+  var filterElements = filters.map(function (item) {
+    return item.element;
   });
   var lastTimeout;
 
@@ -102,9 +102,9 @@
       }
     }
 
-    filters.forEach(function (filter) {
-      if (filter.active) {
-        filter.filterAds(filter.element.value);
+    filters.forEach(function (item) {
+      if (item.active) {
+        item.filterAds(item.element.value);
       }
     });
 
@@ -125,13 +125,13 @@
   }
 
   FeatureFilter.prototype.filterAds = function (rule) {
-    filteredAdsCache = filteredAdsCache.filter(function (ad) {
-      for (var i = 0; i < ad.offer.features.length; i++) {
-        if (ad.offer.features[i] === rule) {
+    filteredAdsCache = filteredAdsCache.filter(function (item) {
+      for (var i = 0; i < item.offer.features.length; i++) {
+        if (item.offer.features[i] === rule) {
           break;
         }
       }
-      return ad.offer.features[i];
+      return item.offer.features[i];
     });
   };
 

@@ -1,7 +1,10 @@
 'use strict';
 
 (function () {
-  var PINS_MAX_INDEX = 5;
+  var PinsIndex = {
+    MAX: 5,
+    FIRST_RELATED: 1
+  };
   var PinsClass = {
     ACTIVE: 'map__pin--active',
     VISIBLE: 'map__pin--visible',
@@ -62,11 +65,11 @@
       window.filterForm.toggleDisability(window.filterForm.status.ACTIVE);
     }
 
-    ads.forEach(function (entity, number) {
-      var pin = renderPin(entity);
-      pin.dataset.id = number;
-      window.pins.adsCache[number].id = number;
-      addPinClickListener(pin, entity);
+    ads.forEach(function (item, i) {
+      var pin = renderPin(item);
+      pin.dataset.id = i;
+      window.pins.adsCache[i].id = i;
+      addPinClickListener(pin, item);
       fragment.appendChild(pin);
     });
 
@@ -77,16 +80,16 @@
 
   function removePins() {
     window.pins.adsCache.length = 0;
-    for (var i = 1; i < pins.length; i++) {
+    for (var i = PinsIndex.FIRST_RELATED; i < pins.length; i++) {
       // Начало с 1, чтобы не удалился главный пин
       pins[i].remove();
     }
   }
 
   function showPins(ads) {
-    ads.slice(0, PINS_MAX_INDEX).forEach(function (ad) {
+    ads.slice(0, PinsIndex.MAX).forEach(function (item) {
       for (var i = 0; i < pins.length; i++) {
-        var isAdAndPinMatched = Number(pins[i].dataset.id) === ad.id;
+        var isAdAndPinMatched = Number(pins[i].dataset.id) === item.id;
         if (isAdAndPinMatched) {
           pins[i].classList.add(PinsClass.VISIBLE);
           pins[i].classList.remove(PinsClass.INVISIBLE);
@@ -98,9 +101,9 @@
 
   function hidePins() {
     var activePins = Array.from(window.page.map.querySelectorAll('.' + PinsClass.VISIBLE));
-    activePins.forEach(function (pin) {
-      pin.classList.remove(PinsClass.VISIBLE);
-      pin.classList.add(PinsClass.INVISIBLE);
+    activePins.forEach(function (item) {
+      item.classList.remove(PinsClass.VISIBLE);
+      item.classList.add(PinsClass.INVISIBLE);
     });
   }
 
