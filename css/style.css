@@ -636,6 +636,15 @@ fieldset {
           box-shadow: 0 0 2px 2px #ff6547;
 }
 
+.ad-form__element .ad-form__element--error {
+  border-color: #f00;
+  border-width: 3px;
+} 
+
+.ad-form__element .ad-form__error-message {
+  color: #f00;
+}
+
 .ad-form__element--time {
   -ms-flex-preferred-size: 50%;
       flex-basis: 50%;

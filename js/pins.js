@@ -66,11 +66,13 @@
     }
 
     ads.forEach(function (item, i) {
-      var pin = renderPin(item);
-      pin.dataset.id = i;
-      window.pins.adsCache[i].id = i;
-      addPinClickListener(pin, item);
-      fragment.appendChild(pin);
+      if (item.offer) {
+        var pin = renderPin(item);
+        pin.dataset.id = i;
+        window.pins.adsCache[i].id = i;
+        addPinClickListener(pin, item);
+        fragment.appendChild(pin);
+      }
     });
 
     pinsWrapper.appendChild(fragment);

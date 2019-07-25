@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var Image = {
     WIDTH: 40,
     HEIGHT: 44,
@@ -17,7 +16,8 @@
     TYPES: ['gif', 'jpg', 'jpeg', 'png']
   };
 
-  function uploadImages(field, previewWrapper, maxIndex) {
+  function uploadImages(field, previewWrapper, maxQuantity) {
+    var maxIndex = --maxQuantity;
     var file = field.files[0];
     var fileName = file.name.toLowerCase();
     var matches = Image.TYPES.some(function (item) {
@@ -27,6 +27,7 @@
     if (matches) {
       var reader = new FileReader();
       increaseImagesCounter(field);
+
       reader.addEventListener('load', function () {
         var currentIndex = window.uploadingImages.index[field.id];
         var isNotMaxIndex = currentIndex <= maxIndex;
@@ -36,7 +37,6 @@
           if (previewImages.length > 0) {
             for (var i = currentIndex; i <= maxIndex; i++) {
               var previewImage = previewImages[i];
-
               if (previewImage && i === maxIndex) {
                 previewImage.src = reader.result;
                 previewImage.classList.add(Image.CLASS);
@@ -49,6 +49,7 @@
             if (currentIndex === maxIndex) {
               field.disabled = true;
             }
+
           } else {
             renderPreviewImage(reader.result, previewWrapper);
           }
@@ -58,9 +59,11 @@
       reader.addEventListener('error', function () {
         window.popup.showError('Не удалось загрузить файл. Попробуйте еще раз или выберите другой файл.');
       });
+
       reader.readAsDataURL(file);
     }
   }
+
 
   function increaseImagesCounter(field) {
     var isUploadedImage = window.uploadingImages.index.field === field.id;

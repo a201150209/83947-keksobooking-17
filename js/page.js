@@ -14,6 +14,7 @@
     adForm.classList.remove(DisabledClass.AD_FORM);
     window.adForm.toggleFieldsetsDisability(window.adForm.status.ACTIVE);
     window.adForm.addFieldsEventListeners();
+    window.adForm.checkCustomValidation();
     window.xhr.create(window.xhr.pinsConfig);
   }
 

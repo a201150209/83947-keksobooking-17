@@ -1,15 +1,20 @@
 'use strict';
 
 (function () {
-  var MaxIndexImages = {
-    AVATAR: 0,
-    PHOTOS: 2
+  var MaxImagesQuantity = {
+    AVATAR: 1,
+    PHOTOS: 3
   };
   var FieldsetStatus = {
     ACTIVE: 'active',
     INACTIVE: 'inactive'
   };
+  var ClassError = {
+    FIELD: 'ad-form__element--error',
+    MESSAGE: 'ad-form__error-message'
+  };
   var formFieldsets = window.page.adForm.querySelectorAll('fieldset');
+  var formFields = getFormFields();
   var addressField = window.page.adForm.querySelector('#address');
   var priceField = window.page.adForm.querySelector('#price');
   var roomNumberField = window.page.adForm.querySelector('#room_number');
@@ -22,6 +27,7 @@
   var photosUploadField = window.page.adForm.querySelector('#images');
   var photosPreviewWrapper = window.page.adForm.querySelector('.ad-form__photo');
   var resetButton = window.page.adForm.querySelector('.ad-form__reset');
+  var submitButton = window.page.adForm.querySelector('.ad-form__submit');
   var offerTypeToMinPrice = {
     'palace': 10000,
     'house': 5000,
@@ -61,28 +67,82 @@
   }
 
   function onAvatarUploadFieldChange(evt) {
-    window.uploadingImages.upload(evt.target, avatarPreviewWrapper, MaxIndexImages.AVATAR);
+    window.uploadingImages.upload(evt.target, avatarPreviewWrapper, MaxImagesQuantity.AVATAR);
   }
 
   function onPhotosUploadFieldChange(evt) {
-    window.uploadingImages.upload(evt.target, photosPreviewWrapper, MaxIndexImages.PHOTOS);
+    window.uploadingImages.upload(evt.target, photosPreviewWrapper, MaxImagesQuantity.PHOTOS);
   }
 
   function onFormSubmit(evt) {
     evt.preventDefault();
-    if (window.page.adForm.checkValidity()) {
-      enableDisabledFields();
-      window.xhr.adFormConfig.data = new FormData(document.forms.adForm);
-      window.xhr.create(window.xhr.adFormConfig);
-      window.page.adForm.reset();
-      window.page.deactivate();
+    enableDisabledFields();
+    window.xhr.adFormConfig.data = new FormData(document.forms.adForm);
+    window.xhr.create(window.xhr.adFormConfig);
+    window.page.adForm.reset();
+    window.page.deactivate();
+  }
+
+  function onItemInput(evt) {
+    var field = evt.target;
+    if (evt.target === roomNumberField || evt.target === capacityField) {
+      field = roomNumberField;
+      checkCustomValidation();
     }
+
+    var errorMessage = getErrorMessage(field);
+    errorMessage.textContent = field.validationMessage;
+    checkFieldValidity(field, errorMessage);
+  }
+
+  function onSubmitButtonClick() {
+    formFields.forEach(function (item) {
+      if (!item.validity.valid) {
+
+        if (item === roomNumberField) {
+          capacityField.addEventListener('input', onItemInput);
+        }
+
+        item.classList.add(ClassError.FIELD);
+        item.addEventListener('input', onItemInput);
+        getErrorMessage(item);
+      }
+    });
   }
 
   function onClickResetButton() {
     enableDisabledFields();
     window.page.adForm.reset();
     window.page.deactivate();
+  }
+
+  function checkFieldValidity(field, errorMessage) {
+    if (field.validity.valid) {
+      errorMessage.remove();
+      field.classList.remove(ClassError.FIELD);
+      if (field === roomNumberField) {
+        capacityField.removeEventListener('input', onItemInput);
+      }
+      field.removeEventListener('input', onItemInput);
+    }
+  }
+
+  function getErrorMessage(field) {
+    var errorMessage = field.nextElementSibling;
+    if (!errorMessage || !errorMessage.classList.contains(ClassError.MESSAGE)) {
+      errorMessage = document.createElement('p');
+      errorMessage.classList.add(ClassError.MESSAGE);
+      errorMessage.textContent = field.validationMessage;
+      field.parentElement.appendChild(errorMessage);
+    }
+    return errorMessage;
+  }
+
+  function getFormFields() {
+    var inputs = Array.from(window.page.adForm.querySelectorAll('input'));
+    var selects = Array.from(window.page.adForm.querySelectorAll('select'));
+    var textareas = Array.from(window.page.adForm.querySelectorAll('textarea'));
+    return inputs.concat(selects, textareas);
   }
 
   function matchRoomsAndCapacities() {
@@ -138,7 +198,10 @@
     avatarUploadField.addEventListener('change', onAvatarUploadFieldChange);
     photosUploadField.addEventListener('change', onPhotosUploadFieldChange);
     resetButton.addEventListener('click', onClickResetButton);
+    submitButton.addEventListener('click', onSubmitButtonClick);
     window.page.adForm.addEventListener('submit', onFormSubmit);
+
+
   }
 
   function removeFormFieldsEventListeners() {
@@ -150,10 +213,11 @@
     avatarUploadField.removeEventListener('change', onAvatarUploadFieldChange);
     photosUploadField.removeEventListener('change', onPhotosUploadFieldChange);
     resetButton.removeEventListener('click', onClickResetButton);
+    submitButton.removeEventListener('click', onSubmitButtonClick);
     window.page.adForm.removeEventListener('submit', onFormSubmit);
   }
 
-  checkCustomValidation();
+
   setMinPrice(typeField.value);
   setAddressFieldValue('round');
   toggleFieldsetsDisability(FieldsetStatus.INACTIVE);
@@ -163,6 +227,7 @@
     toggleFieldsetsDisability: toggleFieldsetsDisability,
     setAddressFieldValue: setAddressFieldValue,
     addFieldsEventListeners: addFormFieldsEventListeners,
-    removeFieldsEventListeners: removeFormFieldsEventListeners
+    removeFieldsEventListeners: removeFormFieldsEventListeners,
+    checkCustomValidation: checkCustomValidation
   };
 })();
