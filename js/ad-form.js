@@ -111,9 +111,20 @@
   }
 
   function onClickResetButton() {
+    removeErrors();
     enableDisabledFields();
     window.page.adForm.reset();
     window.page.deactivate();
+  }
+
+  function removeErrors() {
+    var errorFields = Array.from(window.page.adForm.querySelectorAll('.' + ClassError.FIELD));
+    var errorMessages = Array.from(window.page.adForm.querySelectorAll('.' + ClassError.MESSAGE));
+
+    errorFields.forEach(function (item, i) {
+      item.classList.remove(ClassError.FIELD);
+      errorMessages[i].remove();
+    });
   }
 
   function checkFieldValidity(field, errorMessage) {
@@ -200,8 +211,6 @@
     resetButton.addEventListener('click', onClickResetButton);
     submitButton.addEventListener('click', onSubmitButtonClick);
     window.page.adForm.addEventListener('submit', onFormSubmit);
-
-
   }
 
   function removeFormFieldsEventListeners() {

@@ -31,7 +31,6 @@
     window.uploadingImages.removePreview();
   }
 
-
   window.page = {
     adForm: adForm,
     map: map,
